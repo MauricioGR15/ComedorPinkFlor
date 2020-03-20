@@ -30,7 +30,7 @@ create TABLE Alumnos(
 CREATE TABLE Ingredientes(
     ing_id int IDENTITY (1,1) PRIMARY KEY,
     ing_nombre NVARCHAR (20) not null,
-    ing_cantidad NUMERIC not null,
+    ing_cantidad MONEY not null, --Ingredientes en existencia
     ing_fechaCad DATE not null,
     ing_alergenico BIT not null
 )
@@ -48,8 +48,8 @@ CREATE TABLE Alimentos(
 CREATE TABLE Menus(
     menu_id INT,
     menu_renglon INT IDENTITY (1,1),
-    menu_tipo BIT,
-    menu_costo MONEY,
+    menu_tipo BIT not null,
+    menu_costo MONEY not null,
     PRIMARY KEY (menu_id)
 )
 
@@ -65,7 +65,8 @@ CREATE TABLE Pagos(
     menu_id int not null,
     tutor_rfc NVARCHAR(13) not null,
 	alu_matricula int,
-    pago_cantidad MONEY not null,
+    pago_cantidad MONEY not null, --Este es el pago
+	pago_saldo MONEY not null, --Este es el saldo
     pago_concepto NVARCHAR(20) not null,
     pago_fecha DATE not null,
     FOREIGN KEY (tutor_rfc) REFERENCES Tutores(tutor_RFC),
@@ -84,7 +85,14 @@ CREATE TABLE Alergias(
 CREATE TABLE AlimentoContenido(
 	ali_id int foreign key references Alimentos(ali_id),
 	ing_id int foreign key references Ingredientes(ing_id),
+	ing_cantidad money not null, --Cantidad que lleva el alimento
 	primary key(ali_id,ing_id)
+)
+
+--Nueva tabla en la que se registra la unidad especifica de cada ingrediente
+create table IngredienteMedida(
+	ing_id int foreign key references Ingredientes(ing_id),
+	ing_unidadMedida varchar(5) not null
 )
 
 use master
