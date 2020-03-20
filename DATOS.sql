@@ -44,6 +44,28 @@ insert into Ingredientes values
 	('Leche',50,'20200815',0),
 	('Azucar',30,'20210916',1)
 
+	select * from IngredienteMedida
+
+
+insert into IngredienteMedida values
+	(1,'Gr'),
+	(2,'Gr'),
+	(3,'Gr'),
+	(4,'Gr'),
+	(5,'Kg'),
+	(6,'Kg'),
+	(7,'Kg'),
+	(8,'Kg'),
+	(9,'Kg'),
+	(10,'Kg'),
+	(11,'Kg'),
+	(12,'Kg'),
+	(13,'Kg'),
+	(14,'Kg'),
+	(15,'Kg'),
+	(16,'Lt'),
+	(17,'Gr')
+
 insert into Alergias values 
 	(171567,13,'Salen ronchas en la piel'),
 	(171567,15,'Ojos hinchados'),

@@ -221,3 +221,4 @@ insert into MenuContenido values
 	(7,24),
 	(7,25)
 
+	select * from pagos
