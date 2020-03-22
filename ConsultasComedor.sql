@@ -74,15 +74,9 @@ select * from Alimentos
 select * from MenuContenido
 select *from menus
 
-/*9. obtener las bebidas que estan en el menu mas caro */
-SELECT Alimentos.ali_nombre as bebidas FROM Alimentos
-WHERE ali_tipo = 'B' and ali_ID IN
-(
-SELECT top 1 MenuContenido.menu_id from MenuContenido
-JOIN Menus on MenuContenido.menu_id = Menus.menu_id
-ORDER by Menus.menu_costo DESC
-)
+select * from MenuContenido
 
+/*9. obtener las bebidas que estan en el menu mas caro */
 select Alimentos.ali_nombre as Bebida from Alimentos
 where ali_tipo = 'B' and ali_id in (
 select ali_id as bebidas from MenuContenido
@@ -98,8 +92,8 @@ select p.alu_matricula FROM pagos p
 JOIN MenuContenido mc on mc.menu_id = p.menu_id
 JOIN Alimentos a on a.ali_ID = mc.ali_ID
 WHERE a.ali_nombre = 'pastel' and a.ali_tipo = 'p'
-
 )
+
 /*11.Obtener el nombre de los tutores el dia donde mas ventas hubo */
 GO
 WITH masventas(pagos,fecha)
@@ -247,7 +241,7 @@ as
 )
 SELECT case m.menu_tipo 
 when 0 then 'Especial'
-when 1 then 'Notmal'end as Tipo,
+when 1 then 'Normal'end as Tipo,
 SUM(p.pago_cantidad) as Total
 from Menus m
 JOIN Pagos p on p.menu_id = m.menu_id
@@ -285,7 +279,7 @@ JOIN Alimentos al on al.ali_ID = mc.ali_ID
 WHERE (a.alu_grado = 5 OR a.alu_grado = 6)
 AND al.ali_nombre = 'hamburguesa'
 
-/*28.Obtener las ganancias mensuales de los menus normales y menus especiales*/
+/*29.Obtener las ganancias mensuales de los menus normales y menus especiales*/
 go
 WITH GananciasMensualesMenu(Tipo,Mes,Cantidad)
 as(

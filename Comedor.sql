@@ -7,7 +7,7 @@ create table Tutores(
     tutor_RFC NVARCHAR(13) PRIMARY KEY,
     tutor_nombre NVARCHAR(30) not null,
     tutor_apellidoP NVARCHAR(30) not null,
-    tutor_apellidoM NVARCHAR(30) not null,
+    tutor_apellidoM NVARCHAR(30),
     tutor_trabajo NVARCHAR(30) not null
 )
 
@@ -91,7 +91,7 @@ CREATE TABLE AlimentoContenido(
 
 --Nueva tabla en la que se registra la unidad especifica de cada ingrediente
 create table IngredienteMedida(
-	ing_id int foreign key references Ingredientes(ing_id),
+	ing_id int primary key foreign key references Ingredientes(ing_id),
 	ing_unidadMedida varchar(5) not null
 )
 
