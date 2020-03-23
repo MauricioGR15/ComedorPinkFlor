@@ -70,12 +70,6 @@ GROUP BY MenuContenido.ali_ID
 SELECT*FROM mismosalimentos
 WHERE menus > 2
 
-select * from Alimentos
-select * from MenuContenido
-select *from menus
-
-select * from MenuContenido
-
 /*9. obtener las bebidas que estan en el menu mas caro */
 select Alimentos.ali_nombre as Bebida from Alimentos
 where ali_tipo = 'B' and ali_id in (
@@ -291,6 +285,136 @@ group BY MONTH(p.pago_fecha),m.menu_tipo,p.pago_cantidad
 SELECT*FROM GananciasMensualesMenu gmm
 PIVOT(sum(gmm.Cantidad) FOR Tipo IN (Especial,Normal)) 
 as GananciasPivot
+
+-- 31 Identificar quien no tiene registrado Apellido Materno
+
+SELECT tutor_nombre,
+       tutor_apellidoP,
+       tutor_nombre+' '+tutor_apellidoP  AS NombrePrimerApellido,
+       COALESCE(tutor_nombre+' '+tutor_apellidoP+' '+tutor_apellidoM,
+           tutor_nombre+' '+tutor_apellidoM,
+           'Sin apellido materno') AS [Nombre Completo]
+FROM Tutores AS p;
+
+-- 32 Existencia de los ingredientes en Almacen
+select ing_nombre Ingrediente,CONCAT(ing_cantidad,' ',ing_unidadMedida) Existencia from Ingredientes
+inner join IngredienteMedida
+on Ingredientes.ing_id = IngredienteMedida.ing_id
+
+-- 33 Ingredientes mas usados en Alimentos
+select top (5) ing_nombre, Cant  from
+(select ing_id, count(ing_id) Cant from AlimentoContenido group by (ing_id)) T
+inner join Ingredientes I on
+I.ing_id = T.ing_id
+order by (Cant) desc
+
+
+-- 34 Ingredientes por caducarse
+select I.ing_id, ing_nombre Ingrediente, CONCAT(ing_cantidad,' ',ing_unidadMedida) Existencia,
+       IIF(DATEDIFF(DAY, ing_fechaCad, GETDATE()) < 1,
+           'Caducado',
+           CONCAT(DATEDIFF(DAY, ing_fechaCad, GETDATE()), N' días')) Restan
+           from
+Ingredientes I inner join IngredienteMedida IM
+on I.ing_id=IM.ing_id
+where MONTH(ing_fechaCad)=MONTH(GETDATE())
+
+-- 35 Tutores con más de 2 niños
+select tutor_apellidoP, tutor_nombre from Tutores T
+inner join ((select tutor_RFC,count(tutor_RFC) cant from Alumnos group by (tutor_RFC))) T2
+on T.tutor_RFC=T2.tutor_RFC
+where cant > 1
+
+--36 Menu con más calorias
+select top(1) menu_id, avg(ali_calorias) PromedioCalorias from Alimentos inner join MenuContenido MC
+    on Alimentos.ali_ID = MC.ali_ID
+    group by (menu_id) order by (PromedioCalorias) desc
+
+--37 Menu con menos calorías
+select top(1) menu_id, avg(ali_calorias) PromedioCalorias from Alimentos inner join MenuContenido MC
+    on Alimentos.ali_ID = MC.ali_ID
+    group by (menu_id) order by (PromedioCalorias)
+
+--38 Menu con mas proteinas
+select top(1) menu_id, sum(ali_proteinas) ProteinasTotal from Alimentos inner join MenuContenido MC
+    on Alimentos.ali_ID = MC.ali_ID
+    group by (menu_id) order by (ProteinasTotal) desc
+
+--39 Alimentos que estan en menus especiales
+select distinct ali_nombre from menus m inner join MenuContenido
+    MC on m.menu_id = MC.menu_id
+    inner join Alimentos A on MC.ali_ID = A.ali_ID
+    where menu_tipo = 0
+
+--40 Alimentos que mas ingredientes usan
+select top (5) ali_id,count(ing_id) [Ingredientes diferentes] from AlimentoContenido
+group by  (ali_id) order by (count(ing_id)) desc
+
+--41. Obtener número de telefono de los tutores que son Gerentes
+Select tutor_telefono from
+(Select tutor_trabajo, tutor_telefono from Tutores T
+inner join TelefonosTutores TT
+on T.tutor_RFC = TT.tutor_RFC
+where tutor_trabajo = 'Gerente')TA
+
+--42. Obtener el nombre de los tutores que no tienen telefono asignado
+Select tutor_nombre+' '+tutor_apellidoP[NombreTutor] from
+Tutores TU
+inner join
+(Select T.tutor_RFC from
+Tutores T
+left join TelefonosTutores TT
+on T.tutor_RFC = TT.tutor_RFC
+where TT.tutor_RFC is null)TEL
+on TU.tutor_RFC = TEL.tutor_RFC
+
+--43. Obtener la ID de los alimentos que utilizan menos ingredientes
+Select top (2) ali_id,count(ing_id) [Ingredientes diferentes] from AlimentoContenido
+group by  (ali_id) order by (count(ing_id))
+
+--44. Obtener el nombre de los tutores que tengan alumnos de tercer grado
+Select tutor_nombre+' '+tutor_apellidoP[NombreTutor] from Tutores T
+inner join
+(Select tutor_RFC from Alumnos
+where alu_grado = 3)TG
+on T.tutor_RFC = TG.tutor_RFC
+
+--45. Obtener el nombre de los alumnos que no pertenezcan al grupo A y sean de tercer grado
+Select alu_nombre+' '+alu_apellidoP from Alumnos
+where alu_grupo != 'A' and alu_grado = 3
+
+--46. Obtener el número de pagos que ha realizado cada tutor
+Select tutor_nombre+' '+tutor_apellidoP[NombreTutor], Pagos
+from Tutores T inner join
+(Select tutor_rfc, COUNT(pago_ID)[Pagos] from Pagos
+GROUP BY tutor_rfc)TP
+on T.tutor_RFC = TP.tutor_rfc
+
+--47. Obtener el ingrediente que es alergenico por más alumnos
+Select ing_nombre, MAX(Alergicos) from Ingredientes I
+inner join
+(Select ing_id, COUNT(alu_matricula)[Alergicos] from Alergias
+GROUP BY ing_id)A
+on I.ing_id = A.ing_id
+GROUP BY ing_nombre
+
+--48. Obtener los ingredientes más utilizados en alimentos
+Select top 5 ing_id, COUNT(ali_id)Alimentos from AlimentoContenido
+GROUP BY ing_id
+ORDER BY Alimentos desc
+
+--49. Obtener el grupo que tenga más alumnos con alguna alergia
+Select alu_grupo, MAX(AluAler) from
+(Select alu_grupo,COUNT(distinct Alu.alu_matricula)AluAler from Alumnos Alu
+inner join Alergias Ale
+on Ale.alu_matricula = Alu.alu_matricula
+GROUP BY alu_grupo)A
+GROUP BY alu_grupo
+
+--50. Menu con menos proteinas
+select top(1) menu_id, sum(ali_proteinas) ProteinasTotal from Alimentos inner join MenuContenido MC
+    on Alimentos.ali_ID = MC.ali_ID
+    group by (menu_id) order by (ProteinasTotal)
 
 
 
