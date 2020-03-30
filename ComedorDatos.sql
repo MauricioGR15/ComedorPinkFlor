@@ -1,11 +1,27 @@
 use ComedorPinkFlor
 
 insert into Tutores values 
-	('MALO871112LF5','Oriana','Martinez','Lilian','Administradora'),
-	('PESA901212FE5','Adriana','Perez','Sicairos','Maestra'),
+	('MALO871112LF5','Oriana','Martinez','Lilian','Administrador'),
+	('PESA901212FE5','Adriana','Perez','Sicairos','Profesor'),
 	('LOMT920505LO5','Mario','Lopez',null,'Abogado'),
 	('PILR750814JD3','Rodrigo','Piedras','Lara','Gerente'),
-	('AGAT790115LR3','Tomasa','Aguilar',null,'Vendedora')
+	('AGAT790115LR3','Tomasa','Aguilar',null,'Vendedor'),
+	('LOMG820115GR5','Guadalupe','Lopez','Madrigal','Vendedor'),
+	('LOSR851215RG2','Rosario','Lomeli','Santana','Profesor'),
+	('GADA900910Q35','Alicia','Garcia','Diaz','Administrador'),
+	('ROCR87050645T','Raul','Roman','Castañeda','Abogado'),
+	('RORA751218GR2','Alberto','Rodriguez','Ramirez','Taquero'),
+	('GUCM900915T4C','Marco','Guimares','Cazarez','Ing en Sistemas'),
+	('HAJM840405GR4','Mack','Hardy',null,'Agricultor'),
+	('ZEMP920120FE1','Zepeda','Miyazaki','Perla','Administrador'),
+	('GAPM900101LFG','Maria','Gavilan','Padilla','Profesor'),
+	('MEMG930828GRG','Gabriela','Mendez','Mendieta','Biomedico'),
+	('LOPC931228F45','Cristina','Lopez','Piña','Contador'),
+	('LOSM901225DQ2','Mireya','Lopez','Santillan','Ing en Sistemas'),
+	('GULA930404FE1','Alejandra','Guzman','Lopez','Bioquimico'),
+	('PEPF941010FE5','Francisco','Perez','Perea','Gerente'),
+	('ANTJ870607GH4','Jazmin','Angulo','Torres','Vendedor'),
+	('GORS910519F13','Sebastian','Govea','Romero','Musico')
 
 
 insert into TelefonosTutores values 
@@ -24,16 +40,29 @@ insert into Alumnos values
 	(181417,'Alberto','Peña','Sicairos',1,'A','PESA901212FE5'),
 	(171567,'Gabriela','Lopez','Escobar',2,'B','LOMT920505LO5'),
 	(181517,'Evelyn','Piedras','Sainz',3,'D','PILR750814JD3'),
-	(201618,'Jason','Aguilar','Martinez',6,'A','AGAT790115LR3')
+	(201618,'Jason','Aguilar','Martinez',6,'A','AGAT790115LR3'),
+	(201648,'Paul','Ramos','Zepeda',1,'A','ZEMP920120FE1'),
+	(201315,'Liliana','Ramos','Zepeda',2,'A','ZEMP920120FE1'),
+	(184621,'Mariana','Ramos','Zepeda',4,'B','ZEMP920120FE1'),
+	(196321,'Ana Laura','Ra,ps','Zepeda',3,'C','ZEMP920120FE1'),
+	(198452,'Carlos','Leon','Mendez',4,'B','MEMG930828GRG'),
+	(184113,'Saul','Leon','Mendez',6,'A','MEMG930828GRG'),
+	(174123,'Julissa','Arreola','Guzman',2,'A','GULA930404FE1'),
+	(174852,'Melissa','Arreola','Guzman',2,'A','GULA930404FE1'),
+	(184123,'Genaro','Rodriguez','Herrera',3,'D','RORA751218GR2'),
+	(184756,'Pedro','Rodriguez','Herrera',3,'D','RORA751218GR2'),
+	(175421,'Marissa','Rodriguez','Herrera',4,'C','RORA751218GR2'),
+	(192465,'Leonel','Govea','Garcia',3,'B','GORS910519F13'),
+	(201236,'Gimena','Gavilan','Garcia',5,'A','GADA900910Q35')
 
 insert into Menus values 
-	(1,1,450),
-	(2,1,460),
-	(3,1,454),
-	(4,0,670),
-	(5,1,600),
-	(6,1,570),
-	(7,0,650)
+	(1),
+	(1),
+	(1),
+	(0),
+	(1),
+	(1),
+	(0)
 
 
 insert into Ingredientes values 
@@ -53,10 +82,7 @@ insert into Ingredientes values
 	('Cabreria',14,'20200314',0),
 	('Pastor',23,'20200330',1),
 	('Leche',50,'20200815',0),
-	('Azucar',30,'20210916',1)
-	
-
-insert into Ingredientes values
+	('Azucar',30,'20210916',1),
 	('Zanahoria', 25, '2020-05-25', 0),
 	('Frijol', 28, '2020-04-10', 0),
 	('Salchicha de puerco', 26, '2020-06-06', 1),
@@ -91,15 +117,14 @@ insert into IngredienteMedida values
 	(17,'Gr')
 
 
-
-
 insert into Alergias values 
-	(171567,13,'Salen ronchas en la piel'),
-	(171567,15,'Ojos hinchados'),
-	(181517,1,'Vomito y tos')
+	(171567,13),
+	(171567,15),
+	(181517,1)
 
 
 --ALIMENTOS
+--Le falta el costo
 insert into Alimentos values
 	('Sopa de verduras','C',35,442,25,10),
 	('Carne en su jugo','C',42,430,29,16),
@@ -306,16 +331,12 @@ insert into MenuContenido values
 	(7,25)
 
 --PAGOS
-INSERT INTO Pagos values (1, 'MALO871112LF5', 191618, 800, 1000, 'Mensual', '20200315')
-INSERT INTO Pagos values (2, 'MALO871112LF5', 191618, 600, 800, 'Mensual', '20200415')
-INSERT INTO Pagos values (2, 'PESA901212FE5', 191413, 1800, 2000, 'Trimestral', '20200229')
-INSERT INTO Pagos values (3, 'LOMT920505LO5', 171567, 2500, 2500, 'Semestral', '20200430')
-INSERT INTO Pagos values (1, 'PILR750814JD3', 181517, 1600, 1400, 'Bimestral', '20200303')
-INSERT INTO Pagos values (4, 'PILR750814JD3', 181517, 750, 800, 'Mensual', '20200403')
-INSERT INTO Pagos values (6, 'AGAT790115LR3', 201618, 700, 700, 'Mensual', '20200228')
-INSERT INTO Pagos values (4, 'MALO871112LF5', 191720, 1500, 1200, 'Bimestral', '20200320')
-INSERT INTO Pagos values (2, 'AGAT790115LR3', 201618, 1800, 1500, 'Trimestral', '20200328')
-INSERT INTO Pagos values (7, 'PESA901212FE5', 181417, 850, 800, 'Mensual', '20200302')
+insert into PagoMenu values
+	(1,1,'ZEMP920120FE1',184621,55000), --15 (Omar)
+	(2,2,'ZEMP920120FE1',201315,48780), --25 (Omar)
+	(3,3,'GULA930404FE1',174123,53200), --10 (Omar)
+	(4,4,'GULA930404FE1',174852,51890), --25 (Mauricio)
+	(5,5,'LOMT920505LO5',171567,54000)  --25 (Mauricio)
 
 
 --Sopa de verduras

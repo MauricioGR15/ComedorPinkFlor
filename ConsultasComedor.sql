@@ -418,3 +418,5 @@ select top(1) menu_id, sum(ali_proteinas) ProteinasTotal from Alimentos inner jo
 
 
 
+
+
