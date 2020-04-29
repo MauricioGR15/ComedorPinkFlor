@@ -65,12 +65,29 @@ INSERT into Ingredientes VALUES
 ('Remolachas', 22, '20200913', 0),
 ('Queso Oaxaca', 10, '20200913', 0)
 --3 Ver los ingredientes que hay en stock 
-
+Select ing_id, ing_nombre, ing_cantidad from Ingredientes
+where ing_cantidad >0
 
 --Sentencias para el de Nutriologo--
 --1 Agregar nuevos menus
---Favor de poner todo lo que se ocupa para agregar un menu ya sea normal o especial, no entendi 
---como le hacian
+INSERT INTO Menus values(1),
+						(1),
+						(1)
+
+INSERT INTO MenuContenido values(8, 1),
+								(8, 2),
+								(8, 4),
+								(8, 5),
+								(8, 10),
+								(9, 10),
+								(9, 11),
+								(9, 15),
+								(9,16),
+								(10, 10),
+								(10, 15),
+								(10, 25),
+								(10, 24),
+								(10, 21)
 
 --2 Borrar menus obsoletos y tambien se borre de la tabla donde guiarda su contenido
 delete from Menus WHERE menu_id = 2
@@ -94,9 +111,3 @@ JOIN AlimentoContenido ac on ac.alimento_id = a.alimento_id
 JOIN Ingredientes i on i.ingrediente_id = ac.ingrediente_id
 WHERE m.menu_id = 2--en vez del 2 la variable
 
---podiramos poner otro rol, como de enfermeria para agregar a los
---alumnos con alergias, pero no se si seria estrechar mucho el 
---asunto de los roles
-
---El que nos faltaria seria al cajero, a no ser que tambien se les ocurran
---para los alumnos y tutores(ya que ellos mas que nada solo hacen consultas a la BD)
