@@ -109,6 +109,3 @@ create table IngredienteMedida(
 	ing_id int primary key foreign key references Ingredientes(ingrediente_id),
 	ing_unidadMedida varchar(5) not null
 )
-
-use master
-drop database ComedorPinkFlor

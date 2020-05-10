@@ -1,4 +1,5 @@
 use ComedorPinkFlor
+--favor de recontar las consultas y ver cuantas nos faltan
 /* Consultas para tutores*/
 
 /* 1. obtener los nombres de los tutores que deben dinero durante el mes de marzo del 2020*/
