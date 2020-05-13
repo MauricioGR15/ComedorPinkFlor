@@ -330,9 +330,9 @@ insert into MenuContenido values
 	(7,25)
 
 insert into Ordenes values 
-	(191618, '20200504', '20200502'),
-	(184113, '20200504', '20200502'),
-	(171567, '20200504', '20200504')
+	(191618, '20200504', '20200502',0),
+	(184113, '20200504', '20200502',1),
+	(171567, '20200504', '20200504',0)
 
 
 insert into OrdenDesglosada values
@@ -389,9 +389,9 @@ insert into OrdenDesglosada values
 
 
 insert into PagoOrden values
-	(1,'MALO871112LF5',840,0), 
-	(2,'MEMG930828GRG',780,0), 
-	(3,'LOMT920505LO5',620,0)
+	(1,'MALO871112LF5',840), 
+	(2,'MEMG930828GRG',780), 
+	(3,'LOMT920505LO5',620)
 
 insert into PagoConcepto values
 	(1, 100, '20200502'),
