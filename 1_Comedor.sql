@@ -63,6 +63,7 @@ create table Ordenes (
     matricula int not null references Alumnos(matricula),
     diaInicio date not null,
     fecha date not null,
+    especial bit not null,
     menu_id int foreign key (menu_id) references Menus(menu_id)
     
 )
@@ -78,8 +79,8 @@ CREATE TABLE PagoOrden(
 	pago_id int identity primary key,
 	orden_id int not null foreign key references Ordenes(orden_id),
 	RFC nvarchar(13) not null foreign key references Tutores(RFC),
-	total money not null,
-    especial bit not null, 
+	total money not null
+ 
 )
 
 CREATE TABLE PagoConcepto(
@@ -109,3 +110,9 @@ create table IngredienteMedida(
 	ing_id int primary key foreign key references Ingredientes(ingrediente_id),
 	ing_unidadMedida varchar(5) not null
 )
+
+--SELECT*FROM PagoOrden
+--alter TABLE PagoOrden drop especial
+--delete from PagoConcepto
+--DELETE from PagoOrden
+--delete from Ordenes
