@@ -63,3 +63,39 @@ INSERT into MenuContenido VALUES
 --Aqui acaba el SP
 EXEC SP_Menu_Semanal 1,12,19 --Ejecuta y manda los valores al SP
 drop PROCEDURE SP_Menu_Semanal -- borra el SP
+
+--3. Procedimiento para agregar un tutor y alumno
+go
+CREATE PROCEDURE SP_Alumno_Tutor
+--variables que se cacharan en el programa 
+@RFC VARCHAR(13),@nomT VARCHAR(30),@apT VARCHAR(30),@amT VARCHAR(30),@trabjo VARCHAR(30),
+@Matricula INT,@noA VARCHAR(30),@apA VARCHAR(30),@amA VARCHAR(30),@grado TINYINT,@grupo CHAR(1)
+as
+IF not EXISTS(select matricula from Alumnos WHERE matricula=@matricula)--checa si la matricula ya esta repetida
+--empieza el SP
+BEGIN
+--empieza la Transaccion
+BEGIN TRAN TR_Inscripcion
+--inserta en ambas tablas
+INSERT INTO tutores VALUES
+(@RFC,@nomT,@apT,@amT,@trabjo)
+INSERT INTO Alumnos VALUES
+(@Matricula,@noA,@apA,@amA,@grado,@grupo,@RFC)
+--checha si el nombre del alumno o del tutor estan en blanco
+if(datalength(@noA)=0 or datalength(@nomT)=0)
+--si estan en blanco hace el rollback
+ROLLBACK TRAN TR_Inscripcion
+ELSE
+--si no, le hace commit
+COMMIT TRAN TR_Inscripcion
+END
+--en caso de que la matricula esta repeitda, en el programa lo que haria seria una ventana de error con este mensaje
+else
+BEGIN
+PRINT 'Alumno con matriula repetida'
+End
+-- datos pa probarel SP
+EXEC SP_Alumno_Tutor 'paia990613hsr','angel','prado','isiordia','Estudiante',201618,'juan','perez','garcia',1,'A'
+go
+
+--drop PROCEDURE SP_Alumno_Tutor
