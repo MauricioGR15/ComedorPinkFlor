@@ -17,52 +17,30 @@ GROUP BY a.nombre
 EXEC SP_ComidasDisponibles
 
 --2 SP para agregar el menu de la semana o reutiizar uno anterior
+--voy a hacerlo solo con un alimento de cada tipo para probar, luego ponemos los 7 de cada uno
 go
 CREATE PROCEDURE SP_Menu_Semanal
---Aqui se guardan la PK de los alimentos, solo deje 3 para probar
-@C1 INT = 1,--@C2 INT,@C3 INT,@C4 INT,@C5 INT,@C6 INT,@C7 INT,
-@B1 INT,--@B2 INT,@B3 INT,@B4 INT,@B5 INT,@B6 INT,@B7 INT,
-@P1 INT--@P2 INT,@P3 INT,@P4 INT,@P5 INT,@P6 INT,@P7 INT
-as
---se agregar un nuevo menu, solo ponemos la fecha por que se incrementa solo
-INSERT into Menus VALUES(GETDATE())
---variable para guardar la PK mas reciente en la tabla de menus
-Declare @KEY INT 
---aqui le damos la clave mas reciente
-set @KEY= (select top 1 menu_id from Menus order by menu_id desc)
---puse que imprimiera para ver si llevababa la PK mas reciente
-print @key
---Aqui es donde se pone manoso
---Aqui quiero insertar los alimentos que le mande con la llave mas reciente
---pero da un error de FK
-INSERT into MenuContenido VALUES
-    --Comida
-	(@KEY,@C1),
-	/*(@KEY,@C2),
-	(@KEY,@C3),
-	(@KEY,@C4),
-	(@KEY,@C5),
-	(@KEY,@C6),
-	(@KEY,@C7),*/
---Bebidas
-	(@KEY,@B1),
-	/*(@KEY,@B2),
-	(@KEY,@B3),
-	(@KEY,@B4),
-	(@KEY,@B5),
-	(@KEY,@B6),
-	(@KEY,@B7),*/
---Postres
-	(@KEY,@P1)
-	/*(@KEY,@P2),
-	(@KEY,@P3),
-	(@KEY,@P4),
-	(@KEY,@P5),
-	(@KEY,@P6),
-	(@KEY,@P7)*/
---Aqui acaba el SP
-EXEC SP_Menu_Semanal 1,12,19 --Ejecuta y manda los valores al SP
-drop PROCEDURE SP_Menu_Semanal -- borra el SP
+-- IDs de los alimentos
+@C1 int ,@B1 int, @P1 int
+AS
+BEGIN 
+INSERT Into Menus VALUES
+(GETDATE())
+--variable para cachar la PK del menu mas reciente e insertarlo en MC
+DECLARE @ID_Menu int = (SELECT top 1 menu_id FROM Menus order by menu_id desc)
+insert into MenuContenido VALUES
+--comida
+(@ID_Menu,@C1),
+--bebida
+(@ID_Menu,@B1),
+--postre
+(@ID_Menu,@P1)
+END
+--le mandamos los valores para ejecutarlo
+EXEC SP_Menu_Semanal 1,10,21
+--y checamos que se hayan insertado
+select*FROM Menus
+select*from MenuContenido
 
 --3. Procedimiento para agregar un tutor y alumno
 go
@@ -99,3 +77,76 @@ EXEC SP_Alumno_Tutor 'paia990613hsr','angel','prado','isiordia','Estudiante',201
 go
 
 --drop PROCEDURE SP_Alumno_Tutor
+
+--4. SP para hacer la orden semanal
+--Se tomara la orden con 2 ventanas, la primera sera nomas para elegir los items de la orden de la semana
+--la segunda ventana pedira los datos del tutor(mas que nada su RFC), el tota y todo lo demas que va en PagoOrden
+CREATE PROCEDURE SP_Orden_Semanal
+@ComidaL int,@ComidaMa int,@ComidaMi int,@ComidaJ int,@ComidaV int,
+@BebidaL int,@BebidaMa int,@BebidaMi int,@BebidaJ int,@BebidaV int,
+@PostreL int,@PostreMa int,@PostreMi int,@PostreJ int,@PostreV int,
+@Matricula INT,--tenemos que ver como vamos a cachar la matricula,RFC y el ID Menu del lado del cliente
+@ID_Menu INT,
+@Especial BIT,
+@RFC VARCHAR(13)
+as
+ BEGIN
+	INSERT into Ordenes VALUES
+	(@Matricula,GETDATE(),GETDATE(),@ID_Menu,@Especial)
+	DECLARE @ID_Orden INT = (SELECT top 1 orden_id from Ordenes order by orden_id desc)
+
+	INSERT into OrdenDesglosada VALUES
+	(@ID_Orden,@ComidaL,'Lunes'),
+	(@ID_Orden,@BebidaL,'Lunes'),
+	(@ID_Orden,@PostreL,'Lunes'),
+	
+	(@ID_Orden,@ComidaMa,'Martes'),
+	(@ID_Orden,@BebidaMa,'Martes'),
+	(@ID_Orden,@PostreMa,'Martes'),
+
+	(@ID_Orden,@ComidaMi,'Miercoles'),
+	(@ID_Orden,@BebidaMi,'Miercoles'),
+	(@ID_Orden,@PostreMi,'Miercoles'),
+
+	(@ID_Orden,@ComidaJ,'Jueves'),
+	(@ID_Orden,@BebidaJ,'Jueves'),
+	(@ID_Orden,@PostreJ,'Jueves'),
+
+	(@ID_Orden,@ComidaV,'Viernes'),
+	(@ID_Orden,@BebidaV,'Viernes'),
+	(@ID_Orden,@PostreV,'Viernes')
+
+	--y aqui mandamos a ejecutar el SP para calcular el pago de la orden
+	EXEC SP_Pago_Orden @ID_Orden,@RFC,@Especial
+	
+END
+
+--5 SP para pagar la orden
+go
+CREATE PROCEDURE SP_Pago_Orden
+@ID_Orden int, @RFC NVARCHAR(13),@Espececial bit
+as
+BEGIN
+
+declare @total money = (select sum(a.costo) from OrdenDesglosada od inner join Alimentos a on od.alimento_ID = a.alimento_id
+inner JOIN Ordenes o on o.orden_id =od.orden_id
+WHERE od.orden_id = @ID_Orden)
+--si es especial se le va a cobrar un 10% mas del total de la orden
+if(@Espececial!=0)
+set @total += @total/0/1
+--hace la insercion a ambas tablas de pago
+INSERT into PagoOrden VALUES
+(@ID_Orden,@RFC,@total)
+--cachamos la orden mas reciente que hicimos
+DECLARE @ID_Pago INT = (select top 1 orden_id from PagoOrden order by orden_id desc)
+INSERT into PagoConcepto VALUES
+(@ID_Pago,@total,GETDATE())
+
+END
+
+drop PROCEDURE SP_Pago_Orden
+
+
+--faltaria poner las transacciones
+
+--6. SP para ver los alimentos que se tienen en stock  (Utilizando la vista que ya tenemos)
