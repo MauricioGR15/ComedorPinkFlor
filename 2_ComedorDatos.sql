@@ -1,6 +1,6 @@
 use ComedorPinkFlor
 
-insert into Tutores values 
+insert into Escolar.Tutores values 
 	('MALO871112LF5','Oriana','Martinez','Lilian','Administrador'),
 	('PESA901212FE5','Adriana','Perez','Sicairos','Profesor'),
 	('LOMT920505LO5','Mario','Lopez',null,'Abogado'),
@@ -24,7 +24,7 @@ insert into Tutores values
 	('GORS910519F13','Sebastian','Govea','Romero','Musico')
 
 
-insert into TelefonosTutores values 
+insert into Escolar.TelefonosTutores values 
 	('MALO871112LF5',6672154623),
 	('MALO871112LF5',6678154231),
 	('PESA901212FE5',6671546387),
@@ -33,7 +33,7 @@ insert into TelefonosTutores values
 	('PILR750814JD3',6671346851),
 	('AGAT790115LR3',6671235986)
 
-insert into Alumnos values 
+insert into Escolar.Alumnos values 
 	(191618,'Miguel','Aguiar','Martinez',4,'B','MALO871112LF5'),
 	(191720,'Mariana','Aguiar','Martinez',3,'C','MALO871112LF5'),
 	(191413,'Ivana','Pe�a','Sicairos',5,'B','PESA901212FE5'),
@@ -55,7 +55,7 @@ insert into Alumnos values
 	(192465,'Leonel','Govea','Garcia',3,'B','GORS910519F13'),
 	(201236,'Gimena','Gavilan','Garcia',5,'A','GADA900910Q35')
 
-insert into Menus values 
+insert into Servicios.Menus values 
 	('20200414'),
 	('20200520'),
 	('20200514'),
@@ -65,7 +65,7 @@ insert into Menus values
 	('20200501')
 
 
-insert into Ingredientes values 
+insert into Comida.Ingredientes values 
 	('Pimienta',14,'20220220',0),
 	('Sal de mar',20,'20220415',0),
 	('Ajo',15,'20210506',0),
@@ -97,7 +97,7 @@ insert into Ingredientes values
 	('Extracto de vainilla', 27, '2020-04-02', 1),
 	('Chocolate amargo', 21, '2020-05-05', 1)
 
-insert into IngredienteMedida values
+insert into Comida.IngredienteMedida values
 	(1,'Gr'),
 	(2,'Gr'),
 	(3,'Gr'),
@@ -117,14 +117,14 @@ insert into IngredienteMedida values
 	(17,'Gr')
 
 
-insert into Alergias values 
+insert into Escolar.Alergias values 
 	(171567,13),
 	(171567,15),
 	(181517,1)
 
 
 --ALIMENTOS
-insert into Alimentos values
+insert into Comida.Alimentos values
 	('Sopa de verduras','C',40,35,442,25,10),
 	('Carne en su jugo','C',45,42,430,29,16),
 	('Tamal de puerco','C',25,28,445,7,30),
@@ -153,7 +153,7 @@ insert into Alimentos values
 	('Waffle','P',25,37,259,5,3),
 	('Nieve','P',20,28,180,5,1)
 
-insert into MenuContenido values 
+insert into Servicios.MenuContenido values 
 --Comida
 	(1,1),
 	(1,3),
@@ -329,13 +329,13 @@ insert into MenuContenido values
 	(7,24),
 	(7,25)
 
-insert into Ordenes values 
+insert into Servicios.Ordenes values 
 	(191618, '20200504', '20200502',0,1),
 	(184113, '20200504', '20200502',1,2),
 	(171567, '20200504', '20200504',0,1)
 
 
-insert into OrdenDesglosada values
+insert into Servicios.OrdenDesglosada values
 	(1,2,'Lunes'),
 	(1,3,'Martes'),
 	(1,4,'Miercoles'),
@@ -388,12 +388,12 @@ insert into OrdenDesglosada values
 
 
 
-insert into PagoOrden values
+insert into Servicios.PagoOrden values
 	(1,'MALO871112LF5',840), 
 	(2,'MEMG930828GRG',780), 
 	(3,'LOMT920505LO5',620)
 
-insert into PagoConcepto values
+insert into Servicios.PagoConcepto values
 	(1, 100, '20200502'),
 	(1, 100, '20200503'),
 	(1, 640, '20200506'),
@@ -405,53 +405,51 @@ insert into PagoConcepto values
 
 
 --Sopa de verduras
-INSERT INTO AlimentoContenido values (1, 5, 100)
-INSERT INTO AlimentoContenido values (1, 6, 50)
-INSERT INTO AlimentoContenido values (1, 3, 10)
-INSERT INTO AlimentoContenido values (1, 18, 50)
-INSERT INTO AlimentoContenido values (1, 10, 50)
-INSERT INTO AlimentoContenido values (1, 11, 50)
-INSERT INTO AlimentoContenido values (1, 12, 50)
-INSERT INTO AlimentoContenido values (1, 1, 2)
-INSERT INTO AlimentoContenido values (1, 4, 5)
+INSERT INTO Comida.AlimentoContenido values (1, 5, 100)
+INSERT INTO Comida.AlimentoContenido values (1, 6, 50)
+INSERT INTO Comida.AlimentoContenido values (1, 3, 10)
+INSERT INTO Comida.AlimentoContenido values (1, 18, 50)
+INSERT INTO Comida.AlimentoContenido values (1, 10, 50)
+INSERT INTO Comida.AlimentoContenido values (1, 11, 50)
+INSERT INTO Comida.AlimentoContenido values (1, 12, 50)
+INSERT INTO Comida.AlimentoContenido values (1, 1, 2)
+INSERT INTO Comida.AlimentoContenido values (1, 4, 5)
 
 --Carne en su jugo
-INSERT INTO AlimentoContenido values (2, 20, 100)
-INSERT INTO AlimentoContenido values (2, 21, 100)
-INSERT INTO AlimentoContenido values (2, 19, 200)
-INSERT INTO AlimentoContenido values (2, 6, 50)
-INSERT INTO AlimentoContenido values (2, 1, 2)
-INSERT INTO AlimentoContenido values (2, 4, 5)
+INSERT INTO Comida.AlimentoContenido values (2, 20, 100)
+INSERT INTO Comida.AlimentoContenido values (2, 21, 100)
+INSERT INTO Comida.AlimentoContenido values (2, 19, 200)
+INSERT INTO Comida.AlimentoContenido values (2, 6, 50)
+INSERT INTO Comida.AlimentoContenido values (2, 1, 2)
+INSERT INTO Comida.AlimentoContenido values (2, 4, 5)
 
 --Sopa de tortillas
-INSERT INTO AlimentoContenido values (3, 5, 100)
-INSERT INTO AlimentoContenido values (3, 3, 10)
-INSERT INTO AlimentoContenido values (3, 6, 100)
-INSERT INTO AlimentoContenido values (3, 22, 25)
-INSERT INTO AlimentoContenido values (3, 23, 100)
-INSERT INTO AlimentoContenido values (3, 24, 200)
+INSERT INTO Comida.AlimentoContenido values (3, 5, 100)
+INSERT INTO Comida.AlimentoContenido values (3, 3, 10)
+INSERT INTO Comida.AlimentoContenido values (3, 6, 100)
+INSERT INTO Comida.AlimentoContenido values (3, 22, 25)
+INSERT INTO Comida.AlimentoContenido values (3, 23, 100)
+INSERT INTO Comida.AlimentoContenido values (3, 24, 200)
 
 --Cebada
-INSERT INTO AlimentoContenido values (13, 25, 150)
-INSERT INTO AlimentoContenido values (13, 17, 25)
+INSERT INTO Comida.AlimentoContenido values (13, 25, 150)
+INSERT INTO Comida.AlimentoContenido values (13, 17, 25)
 
 --Horchata
-INSERT INTO AlimentoContenido values (15, 26, 100)
-INSERT INTO AlimentoContenido values (15, 17, 10)
+INSERT INTO Comida.AlimentoContenido values (15, 26, 100)
+INSERT INTO Comida.AlimentoContenido values (15, 17, 10)
 
 --Pastel de vainilla
-INSERT INTO AlimentoContenido values (20, 27, 200)
-INSERT INTO AlimentoContenido values (20, 17, 50)
-INSERT INTO AlimentoContenido values (20, 28, 100)
-INSERT INTO AlimentoContenido values (20, 29, 10)
-INSERT INTO AlimentoContenido values (20, 16, 100)
+INSERT INTO Comida.AlimentoContenido values (20, 27, 200)
+INSERT INTO Comida.AlimentoContenido values (20, 17, 50)
+INSERT INTO Comida.AlimentoContenido values (20, 28, 100)
+INSERT INTO Comida.AlimentoContenido values (20, 29, 10)
+INSERT INTO Comida.AlimentoContenido values (20, 16, 100)
 
 --Pastel de chocolate
-INSERT INTO AlimentoContenido values (21, 27, 200)
-INSERT INTO AlimentoContenido values (21, 17, 50)
-INSERT INTO AlimentoContenido values (21, 28, 100)
-INSERT INTO AlimentoContenido values (21, 30, 100)
-INSERT INTO AlimentoContenido values (21, 16, 100)
-
-
+INSERT INTO Comida.AlimentoContenido values (21, 27, 200)
+INSERT INTO Comida.AlimentoContenido values (21, 17, 50)
+INSERT INTO Comida.AlimentoContenido values (21, 28, 100)
+INSERT INTO Comida.AlimentoContenido values (21, 30, 100)
+INSERT INTO Comida.AlimentoContenido values (21, 16, 100)
 
