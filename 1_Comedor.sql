@@ -30,7 +30,7 @@ create TABLE Alumnos(
 CREATE TABLE Ingredientes(
     ingrediente_id int IDENTITY (1,1) PRIMARY KEY,
     nombre NVARCHAR (20) not null,
-    cantidad MONEY not null, --Ingredientes en existencia
+    cantidad MONEY not null, 
     fechaCad DATE not null,
     alergenico BIT not null
 )
@@ -101,11 +101,10 @@ CREATE TABLE Alergias(
 CREATE TABLE AlimentoContenido(
 	alimento_id int foreign key references Alimentos(alimento_id),
 	ingrediente_id int foreign key references Ingredientes(ingrediente_id),
-	cantidad money not null, --Cantidad que lleva el alimento
+	cantidad money not null, 
 	primary key(alimento_id,ingrediente_id)
 )
 
---Nueva tabla en la que se registra la unidad especifica de cada ingrediente
 create table IngredienteMedida(
 	ing_id int primary key foreign key references Ingredientes(ingrediente_id),
 	ing_unidadMedida varchar(5) not null
@@ -116,3 +115,6 @@ create table IngredienteMedida(
 --delete from PagoConcepto
 --DELETE from PagoOrden
 --delete from Ordenes
+
+use master 
+drop database ComedorPinkFlor
