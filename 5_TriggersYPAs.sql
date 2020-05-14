@@ -27,9 +27,11 @@ CREATE PROCEDURE SP_Menu_Semanal
 @C4 int ,@B4 int, @P4 int,
 @C5 int ,@B5 int, @P5 int,
 @C6 int ,@B6 int, @P6 int,
-@C7 int ,@B7 int, @P7 int,
+@C7 int ,@B7 int, @P7 int
 AS
 BEGIN 
+BEGIN TRY
+BEGIN TRANSACTION
 INSERT Into Menus VALUES
 (GETDATE())
 --variable para cachar la PK del menu mas reciente e insertarlo en MC
@@ -59,6 +61,15 @@ insert into MenuContenido VALUES
 (@ID_Menu,@P5),
 (@ID_Menu,@P6),
 (@ID_Menu,@P7)
+
+COMMIT TRANSACTION
+END TRY
+
+BEGIN CATCH
+ROLLBACK TRANSACTION
+RAISERROR('ERROR AL INSERTAR',16,1)
+END CATCH
+
 END
 --le mandamos los valores para ejecutarlo
 EXEC SP_Menu_Semanal 1,10,21
@@ -116,6 +127,9 @@ CREATE PROCEDURE SP_Orden_Semanal
 @RFC VARCHAR(13)
 as
  BEGIN
+ 	BEGIN TRY
+	BEGIN TRANSACTION
+
 	INSERT into Ordenes VALUES
 	(@Matricula,GETDATE(),GETDATE(),@ID_Menu,@Especial)
 	DECLARE @ID_Orden INT = (SELECT top 1 orden_id from Ordenes order by orden_id desc)
@@ -143,6 +157,14 @@ as
 
 	--y aqui mandamos a ejecutar el SP para calcular el pago de la orden
 	EXEC SP_Pago_Orden @ID_Orden,@RFC,@Especial
+
+	COMMIT TRANSACTION
+
+	END TRY
+
+	BEGIN CATCH
+	RAISERROR('ERROR AL INSERTAR',16,1)
+	END CATCH
 	
 END
 
@@ -152,20 +174,29 @@ CREATE PROCEDURE SP_Pago_Orden
 @ID_Orden int, @RFC NVARCHAR(13),@Espececial bit
 as
 BEGIN
+BEGIN TRY
+	BEGIN TRANSACTION
 
-declare @total money = (select sum(a.costo) from OrdenDesglosada od inner join Alimentos a on od.alimento_ID = a.alimento_id
-inner JOIN Ordenes o on o.orden_id =od.orden_id
-WHERE od.orden_id = @ID_Orden)
---si es especial se le va a cobrar un 10% mas del total de la orden
-if(@Espececial!=0)
-set @total += @total/0.1
---hace la insercion a ambas tablas de pago
-INSERT into PagoOrden VALUES
-(@ID_Orden,@RFC,@total)
---cachamos la orden mas reciente que hicimos
-DECLARE @ID_Pago INT = (select top 1 orden_id from PagoOrden order by orden_id desc)
-INSERT into PagoConcepto VALUES
-(@ID_Pago,@total,GETDATE())
+	declare @total money = (select sum(a.costo) from OrdenDesglosada od inner join Alimentos a on od.alimento_ID = a.alimento_id
+	inner JOIN Ordenes o on o.orden_id =od.orden_id
+	WHERE od.orden_id = @ID_Orden)
+	--si es especial se le va a cobrar un 10% mas del total de la orden
+	if(@Espececial!=0)
+	set @total += @total/0.1
+	--hace la insercion a ambas tablas de pago
+	INSERT into PagoOrden VALUES
+	(@ID_Orden,@RFC,@total)
+	--cachamos la orden mas reciente que hicimos
+	DECLARE @ID_Pago INT = (select top 1 orden_id from PagoOrden order by orden_id desc)
+	INSERT into PagoConcepto VALUES
+	(@ID_Pago,@total,GETDATE())
+
+	COMMIT TRANSACTION
+END TRY
+
+BEGIN CATCH
+	RAISERROR('ERROR AL INSERTAR',16,1)
+END CATCH
 
 END
 
@@ -173,8 +204,6 @@ drop PROCEDURE SP_Pago_Orden
 
 
 --faltaria poner las transaccionesver los alimentos que se tienen en stock  (Utilizando la vista que ya tenemos)
-
-
 
 -- ## TRIGGERS ##
 
