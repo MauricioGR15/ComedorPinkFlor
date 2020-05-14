@@ -1,0 +1,6 @@
+create login tutor_1 with password = 'tutor123'
+create login nutriologo_1 with password = 'nutri123'
+create login almacen_1 with password = 'almacen123'
+create login cocina_1 with password = 'cocina123'
+create login cajero_1 with password = 'cajero123'
+create login administrador_1 with password = 'amin123'
