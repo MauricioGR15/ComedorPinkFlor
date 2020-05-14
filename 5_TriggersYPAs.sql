@@ -209,6 +209,7 @@ drop PROCEDURE SP_Pago_Orden
 
 --1. Trigger para ver si la orden del padre contiene algo a lo que el nino es alergico
 go
+
 CREATE TRIGGER NewOrden ON OrdenDesglosada--nombre del trigger
 FOR INSERT--tigger para insert
 as 
