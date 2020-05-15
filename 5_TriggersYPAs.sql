@@ -245,3 +245,27 @@ PRINT @ID
 INSERT into OrdenDesglosada VALUES
 (@ID,1,'Lunes')
 --select*FROM OrdenDesglosada
+
+--2. Trigger para checar que la orden solo se haga con 3 dias maximos de anticipacion
+go
+CREATE TRIGGER PreOrden ON Ordenes--nombre del trigger
+FOR insert--tigger para insert
+as 
+BEGIN
+--cachamos la fecha de la orden y le agregamos 3 para ver si es antes solo por 3 dias
+DECLARE @day date = (select top 1 DATEADD(dd,3,fecha)from Ordenes order by fecha desc)
+PRINT @day
+--vemos la fecha del siguiente lunes
+Declare @monday date = (select DATEADD(dd, -(DATEPART(dw, @day)-9), @day))
+--comparamos ambas fechas , y @day es menor aun despues de sumarle 3 dias manda el mensaje
+if(@day<@monday)
+PRINT'Aun no puede ordenar'
+ROLLBACK
+END
+
+--valores pa probar
+INSERT into Ordenes VALUES
+(201648,GETDATE(),GETDATE(),0,2)
+SELECT*FROM Alumnos
+SELECT*FROM Ordenes
+
