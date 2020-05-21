@@ -245,3 +245,5 @@ PRINT @ID
 INSERT into OrdenDesglosada VALUES
 (@ID,1,'Lunes')
 --select*FROM OrdenDesglosada
+
+ 
