@@ -23,4 +23,4 @@ alter schema Escolar transfer dbo.Alergias
 
 use ComedorPinkFlor
 
-select * from Alumnos
+select * from dbo.Alumnos
