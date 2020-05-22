@@ -62,7 +62,7 @@ create table Ordenes (
     orden_id int IDENTITY primary key,
     matricula int not null references Alumnos(matricula),
     diaInicio date not null,
-    fecha date not null,
+    fecha date,
     especial bit not null,
     menu_id int foreign key (menu_id) references Menus(menu_id)
     

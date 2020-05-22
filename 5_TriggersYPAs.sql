@@ -247,3 +247,7 @@ INSERT into OrdenDesglosada VALUES
 --select*FROM OrdenDesglosada
 
  
+--Trigger que cheque la informacion antes de insertar un alimento (integridad de datos)
+--Trigger que calcula el precio despues que se actualiza la fecha al finalizar de insertar los alimentos de esa orden
+--Trigger que afecte el PagoOrden despues que se inserto en PagoConcepto, restandole al total lo que se pago
+
