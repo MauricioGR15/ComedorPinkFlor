@@ -1,5 +1,7 @@
+use ComedorPinkFlor
 --Procedimientos Almacenados
 --1 Saber que Comidas puedo hacer con los ingredientes que se tienen el almacen
+go
 CREATE PROCEDURE SP_ComidasDisponibles as
 SELECT a.nombre as Comidas FROM Alimentos a 
 INNER JOIN AlimentoContenido ac
@@ -16,8 +18,7 @@ WHERE cantidad < 1
 GROUP BY a.nombre
 EXEC SP_ComidasDisponibles
 
---2 SP para agregar el menu de la semana o reutiizar uno anterior
---voy a hacerlo solo con un alimento de cada tipo para probar, luego ponemos los 7 de cada uno
+--2 SP para agregar el menu 
 go
 CREATE PROCEDURE SP_Menu_Semanal
 -- IDs de los alimentos
@@ -69,13 +70,7 @@ BEGIN CATCH
 ROLLBACK TRANSACTION
 RAISERROR('ERROR AL INSERTAR',16,1)
 END CATCH
-
 END
---le mandamos los valores para ejecutarlo
-EXEC SP_Menu_Semanal 1,10,21
---y checamos que se hayan insertado
-select*FROM Menus
-select*from MenuContenido
 
 --3. Procedimiento para agregar un tutor y alumno
 go
@@ -111,12 +106,7 @@ End
 EXEC SP_Alumno_Tutor 'paia990613hsr','angel','prado','isiordia','Estudiante',201618,'juan','perez','garcia',1,'A'
 go
 
---drop PROCEDURE SP_Alumno_Tutor
-
 --4. SP para hacer la orden semanal
---Se tomara la orden con 2 ventanas, la primera sera nomas para elegir los items de la orden de la semana
---la segunda ventana pedira los datos del tutor(mas que nada su RFC), el tota y todo lo demas que va en PagoOrden
--- y ver que no se haga mas de 3 dias antes del lunes
 CREATE PROCEDURE SP_Orden_Semanal
 @ComidaL int,@ComidaMa int,@ComidaMi int,@ComidaJ int,@ComidaV int,
 @BebidaL int,@BebidaMa int,@BebidaMi int,@BebidaJ int,@BebidaV int,
@@ -155,15 +145,11 @@ as
 	(@ID_Orden,@BebidaV,'Viernes'),
 	(@ID_Orden,@PostreV,'Viernes')
 
-	--y aqui mandamos a ejecutar el SP para calcular el pago de la orden
-	EXEC SP_Pago_Orden @ID_Orden,@RFC,@Especial
-
 	COMMIT TRANSACTION
-
 	END TRY
-
 	BEGIN CATCH
 	RAISERROR('ERROR AL INSERTAR',16,1)
+	ROLLBACK TRANSACTION
 	END CATCH
 	
 END
@@ -196,21 +182,111 @@ END TRY
 
 BEGIN CATCH
 	RAISERROR('ERROR AL INSERTAR',16,1)
+	ROLLBACK TRANSACTION
 END CATCH
-
 END
 
-drop PROCEDURE SP_Pago_Orden
 
+--6 SPs para insertar un alimento y su contenido 
+go
+CREATE PROCEDURE SP_Insert_Alimento
+@nombre NVARCHAR(30), @tipo char(1),@costo money,
+@carbos money, @calos money,@prote money, @gras money
+AS
+BEGIN
+BEGIN TRY
+	BEGIN TRANSACTION
+	INSERT into Alimentos VALUES
+	(@nombre,@tipo,@costo,@carbos,@calos,@prote,@gras)
+END TRY
 
---faltaria poner las transaccionesver los alimentos que se tienen en stock  (Utilizando la vista que ya tenemos)
+BEGIN CATCH
+	RAISERROR('ERROR AL INSERTAR',16,1)
+	ROLLBACK TRANSACTION
+END CATCH
+End
+
+go
+CREATE PROCEDURE SP_Ingredientes_Temporal
+@in NVARCHAR(30), @ic money
+AS
+BEGIN
+DECLARE @ID_Ali INT = (select top 1 alimento_id from Comida.Alimentos order by alimento_id desc)
+	INSERT into #IngTemporal VALUES
+	(@ID_Ali, (select ingrediente_id from Comida.Ingredientes where nombre = @in), @ic)
+END
+
+go
+CREATE PROCEDURE SP_Temporal_To_Contenido
+AS
+BEGIN
+SELECT* INTO Comida.Ingredientes FROM #IngTemporal
+COMMIT TRANSACTION
+END
+
+--7 Para dar de baja a un Alumno
+go
+CREATE PROCEDURE SP_Borrar_Alumno
+@matricula INT
+AS
+BEGIN 
+BEGIN TRANSACTION
+BEGIN TRY
+	DELETE from Escolar.Alergias WHERE alu_matricula = @matricula
+	--checa si hay alumnos que comparten el mismo tutor
+	Declare @rfc nvarchar(13) = (SELECT RFC from Escolar.Alumnos WHERE matricula =@matricula)
+	--si no hay mas de un alumno, lo borra a el y a su tutor, si no, solo borra al alumno
+	IF((SELECT COUNT(matricula) from Escolar.Alumnos where rfc=@rfc)<2)
+	BEGIN
+	DELETE from Escolar.Alumnos WHERE matricula = @matricula
+	DELETE from Escolar.TelefonosTutores WHERE rfc = @rfc
+	DELETE from Escolar.Tutores WHERE rfc = @rfc;
+	END
+	
+	ELSE
+	BEGIN
+	DELETE from Escolar.Alumnos WHERE matricula = @matricula;
+	END
+
+	COMMIT TRANSACTION
+END TRY
+
+BEGIN CATCH
+	RAISERROR('ERROR AL BORRAR',16,1)
+	ROLLBACK TRANSACTION
+END CATCH
+END
+
+--8 Para dar de baja a un Tutor
+go
+CREATE PROCEDURE SP_Borrar_Tutor
+@RFC INT
+AS
+BEGIN 
+	BEGIN TRANSACTION
+	BEGIN TRY
+	DELETE from Escolar.Alergias WHERE alu_matricula IN
+	(select matricula from Escolar.Alumnos WHERE RFC = @RFC)
+	DELETE from Escolar.Alumnos WHERE matricula IN
+	(select matricula from Escolar.Alumnos WHERE RFC = @RFC)
+	DELETE from Escolar.TelefonosTutores WHERE rfc = @rfc
+	DELETE from Escolar.Tutores WHERE rfc = @rfc;
+
+	COMMIT TRANSACTION
+END TRY
+
+BEGIN CATCH
+	RAISERROR('ERROR AL BORRAR',16,1)
+	ROLLBACK TRANSACTION
+END CATCH
+END
+
 
 -- ## TRIGGERS ##
-
 --1. Trigger para ver si la orden del padre contiene algo a lo que el nino es alergico
 go
 
-CREATE TRIGGER NewOrden ON OrdenDesglosada--nombre del trigger
+CREATE TRIGGER NewOrden ON Servicios.OrdenDesglosada--nombre del trigger
 FOR INSERT--tigger para insert
 as 
 BEGIN
@@ -246,8 +322,53 @@ INSERT into OrdenDesglosada VALUES
 (@ID,1,'Lunes')
 --select*FROM OrdenDesglosada
 
- 
---Trigger que cheque la informacion antes de insertar un alimento (integridad de datos)
---Trigger que calcula el precio despues que se actualiza la fecha al finalizar de insertar los alimentos de esa orden
---Trigger que afecte el PagoOrden despues que se inserto en PagoConcepto, restandole al total lo que se pago
+--2. Trigger para checar que la orden solo se haga con 3 dias maximos de anticipacion
+go
+CREATE TRIGGER PreOrden ON Ordenes--nombre del trigger
+FOR insert--tigger para insert
+as 
+BEGIN
+--cachamos la fecha de la orden y le agregamos 3 para ver si es antes solo por 3 dias
+DECLARE @day date = (select top 1 DATEADD(dd,3,fecha)from Ordenes order by fecha desc)
+PRINT @day
+--vemos la fecha del siguiente lunes
+Declare @monday date = (select DATEADD(dd, -(DATEPART(dw, @day)-9), @day))
+--comparamos ambas fechas , y @day es menor aun despues de sumarle 3 dias manda el mensaje
+if(@day<@monday)
+PRINT'Aun no puede ordenar'
+ROLLBACK
+END
 
+--valores pa probar
+INSERT into Ordenes VALUES
+(201648,GETDATE(),GETDATE(),0,2)
+SELECT*FROM Alumnos
+SELECT*FROM Ordenes
+
+--Agregar alumnos y tutores (Insertar)
+--Insertar un alimento y su  contenido (PA)
+--Modificar un alumno o tutor (modificar)
+ 
+
+ 
+--3. Trigger para crear la tabla temporal de para el contenido del alimento
+go
+CREATE TRIGGER TablaTemporal ON comida.Alimentos
+FOR insert
+as
+BEGIN
+CREATE table #IngTemporal (
+	id_alimento INT,
+	id_ingrediente INT,
+	cantidad money
+
+)
+END
+--4. Trigger para eliminar la tabla temporal
+go
+CREATE TRIGGER DeleteTemporal ON comida.AlimentoContenido
+FOR insert
+as
+BEGIN
+drop table #IngTemporal
+END
