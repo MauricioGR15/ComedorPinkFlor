@@ -70,13 +70,7 @@ BEGIN CATCH
 ROLLBACK TRANSACTION
 RAISERROR('ERROR AL INSERTAR',16,1)
 END CATCH
-
 END
---le mandamos los valores para ejecutarlo
-EXEC SP_Menu_Semanal 1,10,21
---y checamos que se hayan insertado
-select*FROM Menus
-select*from MenuContenido
 
 --3. Procedimiento para agregar un tutor y alumno
 go
@@ -151,15 +145,11 @@ as
 	(@ID_Orden,@BebidaV,'Viernes'),
 	(@ID_Orden,@PostreV,'Viernes')
 
-	--y aqui mandamos a ejecutar el SP para calcular el pago de la orden
-	EXEC SP_Pago_Orden @ID_Orden,@RFC,@Especial
-
 	COMMIT TRANSACTION
-
 	END TRY
-
 	BEGIN CATCH
 	RAISERROR('ERROR AL INSERTAR',16,1)
+	ROLLBACK TRANSACTION
 	END CATCH
 	
 END
@@ -192,8 +182,8 @@ END TRY
 
 BEGIN CATCH
 	RAISERROR('ERROR AL INSERTAR',16,1)
+	ROLLBACK TRANSACTION
 END CATCH
-
 END
 
 
@@ -233,6 +223,64 @@ BEGIN
 SELECT* INTO Comida.Ingredientes FROM #IngTemporal
 COMMIT TRANSACTION
 END
+
+--7 Para dar de baja a un Alumno
+go
+CREATE PROCEDURE SP_Borrar_Alumno
+@matricula INT
+AS
+BEGIN 
+BEGIN TRANSACTION
+BEGIN TRY
+	DELETE from Escolar.Alergias WHERE alu_matricula = @matricula
+	--checa si hay alumnos que comparten el mismo tutor
+	Declare @rfc nvarchar(13) = (SELECT RFC from Escolar.Alumnos WHERE matricula =@matricula)
+	--si no hay mas de un alumno, lo borra a el y a su tutor, si no, solo borra al alumno
+	IF((SELECT COUNT(matricula) from Escolar.Alumnos where rfc=@rfc)<2)
+	BEGIN
+	DELETE from Escolar.Alumnos WHERE matricula = @matricula
+	DELETE from Escolar.TelefonosTutores WHERE rfc = @rfc
+	DELETE from Escolar.Tutores WHERE rfc = @rfc;
+	END
+	
+	ELSE
+	BEGIN
+	DELETE from Escolar.Alumnos WHERE matricula = @matricula;
+	END
+
+	COMMIT TRANSACTION
+END TRY
+
+BEGIN CATCH
+	RAISERROR('ERROR AL BORRAR',16,1)
+	ROLLBACK TRANSACTION
+END CATCH
+END
+
+--8 Para dar de baja a un Tutor
+go
+CREATE PROCEDURE SP_Borrar_Tutor
+@RFC INT
+AS
+BEGIN 
+	BEGIN TRANSACTION
+	BEGIN TRY
+	DELETE from Escolar.Alergias WHERE alu_matricula IN
+	(select matricula from Escolar.Alumnos WHERE RFC = @RFC)
+	DELETE from Escolar.Alumnos WHERE matricula IN
+	(select matricula from Escolar.Alumnos WHERE RFC = @RFC)
+	DELETE from Escolar.TelefonosTutores WHERE rfc = @rfc
+	DELETE from Escolar.Tutores WHERE rfc = @rfc;
+
+	COMMIT TRANSACTION
+END TRY
+
+BEGIN CATCH
+	RAISERROR('ERROR AL BORRAR',16,1)
+	ROLLBACK TRANSACTION
+END CATCH
+END
+
 
 -- ## TRIGGERS ##
 --1. Trigger para ver si la orden del padre contiene algo a lo que el nino es alergico
