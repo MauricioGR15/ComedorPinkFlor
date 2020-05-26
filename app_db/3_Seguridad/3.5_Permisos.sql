@@ -1,3 +1,5 @@
+use ComedorPinkFlor
+
 --Tutor
 grant select on schema::Escolar to tutor
 deny insert, delete, update on schema::Escolar to tutor
