@@ -1,3 +1,5 @@
+use ComedorPinkFlor
+
 create schema Comida AUTHORIZATION dbo
 
 alter schema Comida transfer dbo.Ingredientes

@@ -1,3 +1,5 @@
+use ComedorPinkFlor
+
 create user tutor1 for login tutor_1
 create user nutriologo1 for login nutriologo_1
 create user almacen1 for login almacen_1
