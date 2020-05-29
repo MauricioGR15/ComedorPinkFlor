@@ -48,4 +48,3 @@ on a.alimento_id = od.alimento_ID
 WHERE  DATENAME(week, GETDATE()) = DATENAME(week,o.fecha)
 group by nombre
 
-select * from Comida.Alimentos
