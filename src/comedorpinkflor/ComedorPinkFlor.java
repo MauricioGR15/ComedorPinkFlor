@@ -6,10 +6,7 @@
 package comedorpinkflor;
 
 import components.*;
-import controllers.AgregarAlumnos;
-import controllers.AgregarTutores;
-import controllers.ConConsultas;
-import controllers.ModificarCon;
+import controllers.*;
 import models.Modelo;
 
 import javax.swing.*;
@@ -38,14 +35,17 @@ public class ComedorPinkFlor {
         FormularioTutores formularioTutores = new FormularioTutores();
         ModificarTutor modificarTutor = new ModificarTutor();
         FormularioAlumno formularioAlumno = new FormularioAlumno();
+        BajaAlergias bajaAlergias = new BajaAlergias();
         Consultas consultas = new Consultas();
-        Tabs tabs = new Tabs(formularioTutores.Tutores, modificarTutor.ModificarTutor, formularioAlumno.Alumno, consultas.Consultas);
+        Tabs tabs = new Tabs(formularioTutores.Tutores, modificarTutor.ModificarTutor,
+                formularioAlumno.Alumno, consultas.Consultas, bajaAlergias.BajaAlergias);
 
         //Controladores
         AgregarTutores contAddTutores = new AgregarTutores(formularioTutores, modelo);
         ModificarCon conModTutor = new ModificarCon(modificarTutor, modelo);
         AgregarAlumnos conAddAlumnos = new AgregarAlumnos(formularioAlumno, modelo);
         ConConsultas conConsultas = new ConConsultas(consultas, modelo);
+        ConBaja conBaja = new ConBaja(bajaAlergias,modelo);
 
 
 

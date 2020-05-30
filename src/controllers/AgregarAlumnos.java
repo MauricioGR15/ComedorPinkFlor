@@ -5,12 +5,14 @@ import components.FormularioAlumno;
 import models.Modelo;
 
 import javax.swing.*;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class AgregarAlumnos implements ItemListener {
+public class AgregarAlumnos implements ItemListener, PopupMenuListener {
 
     private final FormularioAlumno vista;
     private final Modelo modelo;
@@ -40,6 +42,9 @@ public class AgregarAlumnos implements ItemListener {
     }
 
     private void escuchadores (){
+
+        vista.cb_tutores.addPopupMenuListener(this);
+
         vista.btn_registrar.addActionListener(e -> {
             try{
                 if(modelo.insertALumno(getState())){
@@ -66,5 +71,26 @@ public class AgregarAlumnos implements ItemListener {
         if(e.getStateChange()!=ItemEvent.SELECTED) {
             return;
         }
+
+    }
+
+    @Override
+    public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+        vista.cb_tutores.removeAllItems();
+        try {
+            agregarTutores();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    @Override
+    public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+
+    }
+
+    @Override
+    public void popupMenuCanceled(PopupMenuEvent e) {
+
     }
 }

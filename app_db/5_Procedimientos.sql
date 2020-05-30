@@ -30,40 +30,36 @@ CREATE PROCEDURE SP_Menu_Semanal
 AS
 BEGIN 
 BEGIN TRY
-BEGIN TRANSACTION
-INSERT Into Servicios.Menus VALUES
-(GETDATE())
---variable para cachar la PK del menu mas reciente e insertarlo en MC
-DECLARE @ID_Menu int = (SELECT top 1 menu_id FROM Servicios.Menus order by menu_id desc)
-insert into Servicios.MenuContenido VALUES
---comida
-(@ID_Menu,@C1),
-(@ID_Menu,@C2),
-(@ID_Menu,@C3),
-(@ID_Menu,@C4),
-(@ID_Menu,@C5),
-
---bebida
-(@ID_Menu,@B1),
-(@ID_Menu,@B2),
-(@ID_Menu,@B3),
-(@ID_Menu,@B4),
-(@ID_Menu,@B5),
-
---postre
-(@ID_Menu,@P1),
-(@ID_Menu,@P2),
-(@ID_Menu,@P3),
-(@ID_Menu,@P4),
-(@ID_Menu,@P5)
-
-
-COMMIT TRANSACTION
+	BEGIN TRANSACTION
+		INSERT Into Servicios.Menus VALUES
+		(GETDATE())
+		--variable para cachar la PK del menu mas reciente e insertarlo en MC
+		DECLARE @ID_Menu int = (SELECT top 1 menu_id FROM Servicios.Menus order by menu_id desc)
+		insert into Servicios.MenuContenido VALUES
+		--comida
+		(@ID_Menu,@C1),
+		(@ID_Menu,@C2),
+		(@ID_Menu,@C3),
+		(@ID_Menu,@C4),
+		(@ID_Menu,@C5),
+		--bebida
+		(@ID_Menu,@B1),
+		(@ID_Menu,@B2),
+		(@ID_Menu,@B3),
+		(@ID_Menu,@B4),
+		(@ID_Menu,@B5),
+		--postre
+		(@ID_Menu,@P1),
+		(@ID_Menu,@P2),
+		(@ID_Menu,@P3),
+		(@ID_Menu,@P4),
+		(@ID_Menu,@P5)
+	COMMIT TRANSACTION
 END TRY
 
 BEGIN CATCH
 ROLLBACK TRANSACTION
-RAISERROR('ERROR AL INSERTAR',16,1)
+RAISERROR('Hubo un error al registrar el menu',16,1)
 END CATCH
 END
 
@@ -338,3 +334,7 @@ create PROCEDURE sp_insertALumno
 @RFC NVARCHAR(13)
 as
 insert into Escolar.Alumnos values (@matricula,@nombre, @apellidoP, @apellidoM, @grado, @grupo, @RFC)
+
+--Dar de baja/eliminar una alargia de un niño
+select * from Escolar.Alergias
+

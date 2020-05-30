@@ -24,7 +24,8 @@ WHERE  DATENAME(week, GETDATE()) = DATENAME(week,o.fecha)
 --3 Vista para mostrar los ingredietes que se tienen en stock
 go
 CREATE VIEW VW_IngredientesStock as
-SELECT i.nombre as Nombre, CONCAT(i.cantidad,' ',im.ing_unidadMedida) as Cantidad FROM Comida.Ingredientes i inner join Comida.IngredienteMedida im 
+SELECT i.nombre as Nombre, CONCAT(i.cantidad,' ',im.ing_unidadMedida) as Cantidad FROM Comida.Ingredientes i 
+inner join Comida.IngredienteMedida im 
 on i.ingrediente_id = im.ing_id
 
 --4 Vista para mostrar los alumnos que tienen alergias y a que son alergicos
@@ -75,3 +76,13 @@ I.ingrediente_id = T.ingrediente_id
 order by (Cant) desc
 
 select * from vista_IngredientesMasUsados
+
+select * from Comida.Alimentos
+
+go
+create view vista_niñosAlergias as
+select a.matricula, a.nombre, apellidoP, a2.ingrediente_id id,c.nombre ingrediente from
+Escolar.Alumnos a inner join Escolar.Alergias a2
+on a.matricula = a2.alu_matricula
+inner join Comida.Ingredientes c
+on a2.ingrediente_id = c.ingrediente_id

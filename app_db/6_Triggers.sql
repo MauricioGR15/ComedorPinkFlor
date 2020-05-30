@@ -1,5 +1,5 @@
 -- ## TRIGGERS ##
---1. Trigger para ver si la orden del padre contiene algo a lo que el nino es alergico
+--Trigger para ver si la orden del padre contiene algo a lo que el nino es alergico
 go
 
 CREATE TRIGGER NewOrden ON Servicios.OrdenDesglosada--nombre del trigger
@@ -38,7 +38,7 @@ INSERT into Servicios.OrdenDesglosada VALUES
 (@ID,1,'Lunes')
 --select*FROM OrdenDesglosada
 
---2. Trigger para checar que la orden solo se haga con 3 dias maximos de anticipacion
+-- Trigger para checar que la orden solo se haga con 3 dias maximos de anticipacion
 go
 CREATE TRIGGER PreOrden ON Servicios.Ordenes--nombre del trigger
 FOR insert--tigger para insert
@@ -61,27 +61,7 @@ INSERT into Ordenes VALUES
 SELECT*FROM Escolar.Alumnos
 SELECT*FROM Servicios.Ordenes
  
---3. Trigger para crear la tabla temporal de para el contenido del alimento
-go
-CREATE TRIGGER TablaTemporal ON comida.Alimentos
-FOR insert
-as
-BEGIN
-CREATE table #IngTemporal (
-	id_alimento INT,
-	id_ingrediente INT,
-	cantidad money
 
-)
-END
---4. Trigger para eliminar la tabla temporal
-go
-CREATE TRIGGER DeleteTemporal ON comida.AlimentoContenido
-FOR insert
-as
-BEGIN
-drop table #IngTemporal
-END
 
 --Trigger que calcula el precio despues que se actualiza la fecha al finalizar de insertar los alimentos de esa orden
 go

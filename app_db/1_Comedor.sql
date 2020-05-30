@@ -110,11 +110,6 @@ create table IngredienteMedida(
 	ing_unidadMedida varchar(5) not null
 )
 
---SELECT*FROM PagoOrden
---alter TABLE PagoOrden drop especial
---delete from PagoConcepto
---DELETE from PagoOrden
---delete from Ordenes
 
-use master 
-drop database ComedorPinkFlor
+--use master 
+--drop database ComedorPinkFlor
