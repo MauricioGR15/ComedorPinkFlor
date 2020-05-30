@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="components.Consultas">
+  <grid id="27dc6" binding="Consultas" layout-manager="GridBagLayout">
+    <constraints>
+      <xy x="20" y="20" width="608" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <component id="64d37" class="javax.swing.JRadioButton" binding="rb_caducar">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag top="5" left="5" bottom="5" right="5" weightx="0.0" weighty="0.0" ipadx="10" ipady="4"/>
+        </constraints>
+        <properties>
+          <font name="Arial Rounded MT Bold"/>
+          <text value="Cerca de caducar"/>
+        </properties>
+      </component>
+      <component id="b0fec" class="javax.swing.JRadioButton" binding="rb_inventario">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag top="5" left="5" bottom="5" right="5" weightx="0.0" weighty="0.0" ipadx="10" ipady="4"/>
+        </constraints>
+        <properties>
+          <font name="Arial Rounded MT Bold"/>
+          <selected value="true"/>
+          <text value="Inventario"/>
+        </properties>
+      </component>
+      <component id="729c1" class="javax.swing.JRadioButton" binding="rb_usados">
+        <constraints>
+          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag top="5" left="5" bottom="5" right="5" weightx="0.0" weighty="0.0" ipadx="10" ipady="4"/>
+        </constraints>
+        <properties>
+          <font name="Arial Rounded MT Bold"/>
+          <text value="Ingredientes más usados"/>
+        </properties>
+      </component>
+      <scrollpane id="35f7c">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="4" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="0.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <font name="Arial Rounded MT Bold"/>
+          <preferredSize width="600" height="350"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <component id="a6fa7" class="javax.swing.JTable" binding="tablaVistas">
+            <constraints/>
+            <properties>
+              <preferredSize width="400" height="400"/>
+            </properties>
+          </component>
+        </children>
+      </scrollpane>
+      <component id="dd7ed" class="javax.swing.JRadioButton" binding="rb_alergicos">
+        <constraints>
+          <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <gridbag top="5" left="5" bottom="5" right="5" weightx="0.0" weighty="0.0" ipadx="10" ipady="4"/>
+        </constraints>
+        <properties>
+          <font name="Arial Rounded MT Bold"/>
+          <selected value="false"/>
+          <text value="Niños alérgicos"/>
+        </properties>
+      </component>
+    </children>
+  </grid>
+  <buttonGroups>
+    <group name="grupo">
+      <member id="64d37"/>
+      <member id="64d37"/>
+      <member id="b0fec"/>
+      <member id="729c1"/>
+      <member id="dd7ed"/>
+    </group>
+  </buttonGroups>
+</form>

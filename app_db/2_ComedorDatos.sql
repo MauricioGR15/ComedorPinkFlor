@@ -33,11 +33,12 @@ insert into TelefonosTutores values
 	('PILR750814JD3',6671346851),
 	('AGAT790115LR3',6671235986)
 
+
 insert into Alumnos values 
 	(191618,'Miguel','Aguiar','Martinez',4,'B','MALO871112LF5'),
 	(191720,'Mariana','Aguiar','Martinez',3,'C','MALO871112LF5'),
-	(191413,'Ivana','Pe�a','Sicairos',5,'B','PESA901212FE5'),
-	(181417,'Alberto','Pe�a','Sicairos',1,'A','PESA901212FE5'),
+	(191413,'Ivana','Peña','Sicairos',5,'B','PESA901212FE5'),
+	(181417,'Alberto','Peña','Sicairos',1,'A','PESA901212FE5'),
 	(171567,'Gabriela','Lopez','Escobar',2,'B','LOMT920505LO5'),
 	(181517,'Evelyn','Piedras','Sainz',3,'D','PILR750814JD3'),
 	(201618,'Jason','Aguilar','Martinez',6,'A','AGAT790115LR3'),
@@ -54,6 +55,7 @@ insert into Alumnos values
 	(175421,'Marissa','Rodriguez','Herrera',4,'C','RORA751218GR2'),
 	(192465,'Leonel','Govea','Garcia',3,'B','GORS910519F13'),
 	(201236,'Gimena','Gavilan','Garcia',5,'A','GADA900910Q35')
+
 
 insert into Menus values 
 	('20200414'),
@@ -97,6 +99,7 @@ insert into Ingredientes values
 	('Extracto de vainilla', 27, '2020-04-02', 1),
 	('Chocolate amargo', 21, '2020-05-05', 1)
 
+
 insert into IngredienteMedida values
 	(1,'Gr'),
 	(2,'Gr'),
@@ -123,7 +126,6 @@ insert into Alergias values
 	(181517,1)
 
 
---ALIMENTOS
 insert into Alimentos values
 	('Sopa de verduras','C',40,35,442,25,10),
 	('Carne en su jugo','C',45,42,430,29,16),
@@ -152,6 +154,7 @@ insert into Alimentos values
 	('Crepa','P',40,40,289,3,1),
 	('Waffle','P',25,37,259,5,3),
 	('Nieve','P',20,28,180,5,1)
+
 
 insert into MenuContenido values 
 --Comida
@@ -329,127 +332,292 @@ insert into MenuContenido values
 	(7,24),
 	(7,25)
 
-insert into Ordenes values 
-	(191618, '20200504', '20200502',0,1),
-	(184113, '20200504', '20200502',1,2),
-	(171567, '20200504', '20200504',0,1)
+
+INSERT INTO Ordenes values -- 30
+	(191618, '20200504', '20200502', 0, 1),
+	(184113, '20200504', '20200502', 1, 2),
+	(171567, '20200504', '20200504', 0, 1),
+	(184517, '20200525', null, 0, 1), 
+	(174123, '20200525', null, 0, 2),
+	(174852, '20200518', '20200510', 1, 3),
+	(175421, '20200518', '20200511', 1, 4),
+	(181417, '20200511', '20200508', 0, 5),
+	(181517, '20200504', '20200501', 0, 6),
+	(184113, '20200427', '20200417', 1, 7),
+	(184123, '20200420', '20200419', 0, 4),
+	(174123, '20200413', '20200403', 1, 5),
+	(175421, '20200406', '20200405', 0, 6),
+	(191618, '20200330', '20200329', 0, 7),
+	(184113, '20200323', '20200322', 0, 2),
+	(171567, '20200316', '20200315', 0, 5),
+	(184517, '20200309', '20200308', 0, 3),
+	(174123, '20200302', '20200301', 0, 4),
+	(174852, '20200224', '20200223', 0, 7),
+	(175421, '20200217', '20200207', 1, 3),
+	(181417, '20200210', '20200209', 0, 4),
+	(181517, '20200203', '20200202', 0, 1),
+	(181113, '20200127', '20200117', 1, 4),
+	(184123, '20200120', '20200119', 0, 2),
+	(174123, '20200113', '20200103', 1, 7),
+	(175421, '20200106', '20200104', 0, 1),
+	(191618, '20191230', '20191229', 0, 6),
+	(184113, '20191223', '20191213', 1, 3),
+	(171567, '20191216', '20191215', 0, 7),
+	(184517, '20191209', '20191207', 0, 4) 
 
 
-insert into OrdenDesglosada values
-	(1,2,'Lunes'),
-	(1,3,'Martes'),
-	(1,4,'Miercoles'),
-	(1,5,'Jueves'),
-	(1,6,'Viernes'),
-	(1,12,'Lunes'),
-	(1,12,'Martes'),
-	(1,18,'Miercoles'),
-	(1,18,'Jueves'),
-	(1,13,'Viernes'),
-	(1,20,'Lunes'),
-	(1,25,'Martes'),
-	(1,19,'Miercoles'),
-	(1,23,'Jueves'),
-	(1,22,'Viernes'),
+INSERT INTO OrdenDesglosada values --60
+--15
+	(1, 2, 'Lunes'),
+	(1, 12, 'Lunes'),
+	(1, 20, 'Lunes'),
+	(1, 3, 'Martes'),
+	(1, 12, 'Martes'),
+	(1, 25, 'Martes'),
+	(1, 4, 'Miercoles'),
+	(1, 18, 'Miercoles'),
+	(1, 19, 'Miercoles'),
+	(1, 5, 'Jueves'),
+	(1, 18, 'Jueves'),
+	(1, 23, 'Jueves'),
+	(1, 6, 'Viernes'),
+	(1, 13, 'Viernes'),
+	(1, 22, 'Viernes'),
+--15
+	(2, 2, 'Lunes'),
+	(2, 12, 'Lunes'),
+	(2, 20, 'Lunes'),
+	(2, 3, 'Martes'),
+	(2, 12, 'Martes'),
+	(2, 25, 'Martes'),
+	(2, 4, 'Miercoles'),
+	(2, 18, 'Miercoles'),
+	(2, 19, 'Miercoles'),
+	(2, 5, 'Jueves'),
+	(2, 18, 'Jueves'),
+	(2, 23, 'Jueves'),
+	(2, 6, 'Viernes'),
+	(2, 13, 'Viernes'),
+	(2, 22, 'Viernes'),
+--15
+	(3, 2, 'Lunes'),
+	(3, 12,'Lunes'),
+	(3, 20, 'Lunes'),
+	(3, 3, 'Martes'),
+	(3, 12, 'Martes'),
+	(3, 25, 'Martes'),
+	(3, 4, 'Miércoles'),
+	(3, 18, 'Miércoles'),
+	(3, 19, 'Miércoles'),
+	(3, 5, 'Jueves'),
+	(3, 18, 'Jueves'),
+	(3, 23, 'Jueves'),
+	(3, 6, 'Viernes'),
+	(3, 13, 'Viernes'),
+	(3, 22, 'Viernes'),
+--15
+	(4, 1, 'Lunes'),
+	(4, 12, 'Lunes'),
+	(4, 20, 'Lunes'),
+	(4, 3, 'Martes'),
+	(4, 13, 'Martes'),
+	(4, 21, 'Martes'),
+	(4, 4, 'Miércoles'),
+	(4, 14, 'Miércoles'),
+	(4, 22, 'Miércoles'),
+	(4, 6, 'Jueves'),
+	(4, 15, 'Jueves'),
+	(4, 23, 'Jueves'),
+	(4, 7, 'Viernes'),
+	(4, 16, 'Viernes'),
+	(4, 23, 'Viernes')
 
-	(2,2,'Lunes'),
-	(2,3,'Martes'),
-	(2,4,'Miercoles'),
-	(2,5,'Jueves'),
-	(2,6,'Viernes'),
-	(2,12,'Lunes'),
-	(2,12,'Martes'),
-	(2,18,'Miercoles'),
-	(2,18,'Jueves'),
-	(2,13,'Viernes'),
-	(2,20,'Lunes'),
-	(2,25,'Martes'),
-	(2,19,'Miercoles'),
-	(2,23,'Jueves'),
-	(2,22,'Viernes'),
 
-	(3,2,'Lunes'),
-	(3,3,'Martes'),
-	(3,4,'Miercoles'),
-	(3,5,'Jueves'),
-	(3,6,'Viernes'),
-	(3,12,'Lunes'),
-	(3,12,'Martes'),
-	(3,18,'Miercoles'),
-	(3,18,'Jueves'),
-	(3,13,'Viernes'),
-	(3,20,'Lunes'),
-	(3,25,'Martes'),
-	(3,19,'Miercoles'),
-	(3,23,'Jueves'),
-	(3,22,'Viernes')
-
-
-
+insert into PagoOrden values --30
+	(1, 'MALO871112LF5', 840), 
+	(2, 'MEMG930828GRG', 780), 
+	(3, 'LOMT920505LO5', 620),
+	(4, 'PILR750814JD3', 500),
+	(5, 'GULA930404FE1', 570),
+	(6, 'GULA930404FE1', 810),
+	(7, 'RORA751218GR2', 750),
+	(8, 'PESA901212FE5' ,660),
+	(9, 'PILR750814JD3', 530),
+	(10, 'MEMG930828GRG', 590),
+	(11, 'RORA751218GR2', 710),
+	(12, 'GULA930404FE1', 650),
+	(13, 'GORS910519F13', 720),
+	(14, 'MALO871112LF5', 800),
+	(15, 'MEMG930828GRG', 620),
+	(16, 'LOMT920505LO5', 750),
+	(17, 'PILR750814JD3', 550),
+	(18, 'GULA930404FE1', 710),
+	(19, 'GULA930404FE1', 780),
+	(20, 'RORA751218GR2', 810),
+	(21, 'PESA901212FE5', 650),
+	(22, 'PILR750814JD3', 550),
+	(23, 'MEMG930828GRG', 630),
+	(24, 'RORA751218GR2', 700),
+	(25, 'GULA930404FE1', 780),
+	(26, 'GORS910519F13', 850),
+	(27, 'MALO871112LF5', 760),
+	(28, 'MEMG930828GRG', 650),
+	(29, 'LOMT920505LO5', 580),
+	(30, 'PILR750814JD3', 590),
 
 
-insert into PagoOrden values
-	(1,'MALO871112LF5',840), 
-	(2,'MEMG930828GRG',780), 
-	(3,'LOMT920505LO5',620)
-
-insert into PagoConcepto values
+insert into PagoConcepto values --90
 	(1, 100, '20200502'),
 	(1, 100, '20200503'),
 	(1, 640, '20200506'),
 	(2, 480, '20200508'),
-	(2, 300, '20200510'),
-	(3, 620, '20200502')
-
-	
+	(2, 200, '20200510'),
+	(2, 188, '20200511'),
+	(3, 220, '20200502'),
+	(3, 200, '20200504'),
+	(3, 200, '20200503'),
+	(4, 250, '20200526'),
+	(4, 100, '20200527'),
+	(4, 150, '20200528'),
+	(5, 250, '20200526'),
+	(5, 220, '20200527'),
+	(5, 100, '20200528'),
+	(6, 180, '20200510'),
+	(6, 130, '20200511'),
+	(6, 500, '20200512'),
+	(7, 300, '20200511'),
+	(7, 200, '20200512'),
+	(7, 250, '20200513'),
+	(8, 100, '20200508'),
+	(8, 315, '20200509'),
+	(8, 245, '20200510'),
+	(9, 130, '20200501'),
+	(9, 200, '20200503'),
+	(9, 200, '20200504'),
+	(10, 130, '20200417'),
+	(10, 230, '20200418'),
+	(10, 230, '20200419'),
+	(11, 210, '20200419'),
+	(11, 400, '20200420'),
+	(11, 100, '20200421'),
+	(12, 320, '20200403'),
+	(12, 200, '20200404'),
+	(12, 100, '20200405'),
+	(13, 340, '20200405'),
+	(13, 240, '20200406'),
+	(13, 140, '20200407'),
+	(14, 300, '20200329'),
+	(14, 300, '20200330'),
+	(14, 200, '20200331'),
+	(15, 200, '20200322'),
+	(15, 200, '20200323'),
+	(15, 220, '20200324'),
+	(16, 300, '20200315'),
+	(16, 225, '20200316'),
+	(16, 225, '20200317'),
+	(17, 125, '20200308'),
+	(17, 125, '20200309'),
+	(17, 300, '20200310'),
+	(18, 300, '20200301'),
+	(18, 300, '20200302'),
+	(18, 110, '20200303'),
+	(19, 240, '20200223'),
+	(19, 240, '20200224'),
+	(19, 300, '20200225'),
+	(20, 370, '20200207'),
+	(20, 100, '20200208'),
+	(20, 340, '20200209'),
+	(21, 320, '20200209'),
+	(21, 200, '20200210'),
+	(21, 100, '20200211'),
+	(22, 150, '20200202'),
+	(22, 200, '20200203'),
+	(22, 200, '20200204'),
+	(23, 210, '20200117'),
+	(23, 210, '20200118'),
+	(23, 210, '20200119'),
+	(24, 300, '20200119'),
+	(24, 200, '20200120'),
+	(24, 200, '20200121'),
+	(25, 240, '20200103'),
+	(25, 240, '20200104'),
+	(25, 300, '20200105'),
+	(26, 320, '20200104'),
+	(26, 330, '20200105'),
+	(26, 200, '20200106'),
+	(27, 220, '20191229'),
+	(27, 320, '20191230'),
+	(27, 220, '20191231'),
+	(28, 350, '20191213'),
+	(28, 200, '20191214'),
+	(28, 100, '20191215'),
+	(29, 130, '20191215'),
+	(29, 230, '20191216'),
+	(29, 220, '20191217'),
+	(30, 310, '20191207'),
+	(30, 140, '20191208'),
+	(30, 140, '20191209'),
 
 
 --Sopa de verduras
-INSERT INTO AlimentoContenido values (1, 5, 100)
-INSERT INTO AlimentoContenido values (1, 6, 50)
-INSERT INTO AlimentoContenido values (1, 3, 10)
-INSERT INTO AlimentoContenido values (1, 18, 50)
-INSERT INTO AlimentoContenido values (1, 10, 50)
-INSERT INTO AlimentoContenido values (1, 11, 50)
-INSERT INTO AlimentoContenido values (1, 12, 50)
-INSERT INTO AlimentoContenido values (1, 1, 2)
-INSERT INTO AlimentoContenido values (1, 4, 5)
+INSERT INTO AlimentoContenido values 
+	(1, 5, 100),
+	(1, 6, 50),
+	(1, 3, 10),
+	(1, 18, 50),
+	(1, 10, 50),
+	(1, 11, 50),
+	(1, 12, 50),
+	(1, 1, 2),
+	(1, 4, 5)
 
 --Carne en su jugo
-INSERT INTO AlimentoContenido values (2, 20, 100)
-INSERT INTO AlimentoContenido values (2, 21, 100)
-INSERT INTO AlimentoContenido values (2, 19, 200)
-INSERT INTO AlimentoContenido values (2, 6, 50)
-INSERT INTO AlimentoContenido values (2, 1, 2)
-INSERT INTO AlimentoContenido values (2, 4, 5)
+INSERT INTO AlimentoContenido values 
+	(2, 20, 100),
+	(2, 21, 100),
+	(2, 19, 200),
+	(2, 6, 50),
+	(2, 1, 2),
+	(2, 4, 5)
 
 --Sopa de tortillas
-INSERT INTO AlimentoContenido values (3, 5, 100)
-INSERT INTO AlimentoContenido values (3, 3, 10)
-INSERT INTO AlimentoContenido values (3, 6, 100)
-INSERT INTO AlimentoContenido values (3, 22, 25)
-INSERT INTO AlimentoContenido values (3, 23, 100)
-INSERT INTO AlimentoContenido values (3, 24, 200)
+INSERT INTO AlimentoContenido values 
+	(3, 5, 100),
+	(3, 3, 10),
+	(3, 6, 100),
+	(3, 22, 25),
+	(3, 23, 100),
+	(3, 24, 200)
 
 --Cebada
-INSERT INTO AlimentoContenido values (13, 25, 150)
-INSERT INTO AlimentoContenido values (13, 17, 25)
+INSERT INTO AlimentoContenido values 
+	(13, 25, 150),
+	(13, 17, 25)
 
 --Horchata
-INSERT INTO AlimentoContenido values (15, 26, 100)
-INSERT INTO AlimentoContenido values (15, 17, 10)
+INSERT INTO AlimentoContenido values 
+	(15, 26, 100),
+	(15, 17, 10)
 
 --Pastel de vainilla
-INSERT INTO AlimentoContenido values (20, 27, 200)
-INSERT INTO AlimentoContenido values (20, 17, 50)
-INSERT INTO AlimentoContenido values (20, 28, 100)
-INSERT INTO AlimentoContenido values (20, 29, 10)
-INSERT INTO AlimentoContenido values (20, 16, 100)
+INSERT INTO AlimentoContenido values 
+	(20, 27, 200),
+	(20, 17, 50),
+	(20, 28, 100),
+	(20, 29, 10),
+	(20, 16, 100)
 
 --Pastel de chocolate
-INSERT INTO AlimentoContenido values (21, 27, 200)
-INSERT INTO AlimentoContenido values (21, 17, 50)
-INSERT INTO AlimentoContenido values (21, 28, 100)
-INSERT INTO AlimentoContenido values (21, 30, 100)
-INSERT INTO AlimentoContenido values (21, 16, 100)
+INSERT INTO AlimentoContenido values 
+	(21, 27, 200),
+	(21, 17, 50),
+	(21, 28, 100),
+	(21, 30, 100),
+	(21, 16, 100)
+
+select * from alumnos
+select * from Menus
+select * from MenuContenido
+select * from Alimentos
+select * from Menus
 

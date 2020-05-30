@@ -302,16 +302,16 @@ inner join IngredienteMedida
 on Ingredientes.ing_id = IngredienteMedida.ing_id
 
 -- 33 Ingredientes mas usados en Alimentos
-select top (5) ing_nombre, Cant  from
-(select ing_id, count(ing_id) Cant from AlimentoContenido group by (ing_id)) T
-inner join Ingredientes I on
-I.ing_id = T.ing_id
+select top (5) nombre, Cant  from
+(select ingrediente_id, count(ingrediente_id) Cant from Comida.AlimentoContenido group by (ingrediente_id)) T
+inner join Comida.Ingredientes I on
+I.ingrediente_id = T.ingrediente_id
 order by (Cant) desc
 
 
 -- 34 Ingredientes por caducarse
 select I.ing_id, ing_nombre Ingrediente, CONCAT(ing_cantidad,' ',ing_unidadMedida) Existencia,
-       IIF(DATEDIFF(DAY, ing_fechaCad, GETDATE()) < 1,
+       IF(DATEDIFF(DAY, ing_fechaCad, GETDATE()) < 1,
            'Caducado',
            CONCAT(DATEDIFF(DAY, ing_fechaCad, GETDATE()), N' días')) Restan
            from
@@ -373,11 +373,11 @@ Select top (2) ali_id,count(ing_id) [Ingredientes diferentes] from AlimentoConte
 group by  (ali_id) order by (count(ing_id))
 
 --44. Obtener el nombre de los tutores que tengan alumnos de tercer grado
-Select tutor_nombre+' '+tutor_apellidoP[NombreTutor] from Tutores T
+Select nombre+' '+apellidoP[NombreTutor] from Escolar.Tutores T
 inner join
-(Select tutor_RFC from Alumnos
-where alu_grado = 3)TG
-on T.tutor_RFC = TG.tutor_RFC
+(Select RFC from Escolar.Alumnos
+where grado = 3)TG
+on T.RFC = TG.RFC
 
 --45. Obtener el nombre de los alumnos que no pertenezcan al grupo A y sean de tercer grado
 Select alu_nombre+' '+alu_apellidoP from Alumnos
@@ -399,8 +399,8 @@ on I.ing_id = A.ing_id
 GROUP BY ing_nombre
 
 --48. Obtener los ingredientes más utilizados en alimentos
-Select top 5 ing_id, COUNT(ali_id)Alimentos from AlimentoContenido
-GROUP BY ing_id
+Select top 5 ingrediente_id, COUNT(alimento_id)Alimentos from Comida.AlimentoContenido
+GROUP BY ingrediente_id
 ORDER BY Alimentos desc
 
 --49. Obtener el grupo que tenga más alumnos con alguna alergia
@@ -417,6 +417,6 @@ select top(1) menu_id, sum(ali_proteinas) ProteinasTotal from Alimentos inner jo
     group by (menu_id) order by (ProteinasTotal)
 
 
-
+use ComedorPinkFlor
 
 
