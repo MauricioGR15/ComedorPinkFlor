@@ -48,3 +48,30 @@ on a.alimento_id = od.alimento_ID
 WHERE  DATENAME(week, GETDATE()) = DATENAME(week,o.fecha)
 group by nombre
 
+select * from Escolar.TelefonosTutores
+
+
+--Vista para obtener ingredientes cercanos a caducar o caducados
+GO
+create view vista_ingredientesPorCaducar as
+select I.ingrediente_id, nombre Ingrediente, CONCAT(cantidad,' ',ing_unidadMedida) Existencia,
+       IIF(DATEDIFF(DAY, fechaCad, GETDATE()) < 1,
+           'Caducado',
+           CONCAT(DATEDIFF(DAY, fechaCad, GETDATE()), N' días')) Restan
+           from
+Comida.Ingredientes I inner join Comida.IngredienteMedida IM
+on I.ingrediente_id=IM.ing_id
+where MONTH(fechaCad)=MONTH(GETDATE())
+
+select * from vista_ingredientesPorCaducar
+
+--Vista para ingredientes mas usados en Alimentos
+GO
+create view vista_IngredientesMasUsados as
+select top (10) nombre, Cant  from
+(select ingrediente_id, count(ingrediente_id) Cant from Comida.AlimentoContenido group by (ingrediente_id)) T
+inner join Comida.Ingredientes I on
+I.ingrediente_id = T.ingrediente_id
+order by (Cant) desc
+
+select * from vista_IngredientesMasUsados

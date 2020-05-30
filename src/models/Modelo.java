@@ -3,6 +3,7 @@ package models;
 import classes.Alumno;
 import classes.Tutor;
 
+import javax.swing.table.DefaultTableModel;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -82,7 +83,71 @@ public class Modelo {
         return true;
     }
 
+    public DefaultTableModel vistaStock () throws SQLException {
+        query = "select * from VW_IngredientesStock";
+        ResultSet rs = connection.executeQuery(query);
+        String[] columnas = {"Ingrediente", "Cantidad"};
+        String[] registros = new String[columnas.length];
+        DefaultTableModel tableModel = new DefaultTableModel(null,columnas);
 
+        while(rs.next()){
+            registros[0] = rs.getString("Nombre");
+            registros[1] = rs.getString("Cantidad");
+            tableModel.addRow(registros);
+        }
+
+        return tableModel;
+    }
+
+    public DefaultTableModel vistaCaducar () throws SQLException{
+        query = "select * from vista_ingredientesPorCaducar";
+        ResultSet rs = connection.executeQuery(query);
+        String[] columnas = {"Id ingrediente", "Ingrediente", "Existencia", "Días Restantes"};
+        String[] registros = new String[columnas.length];
+        DefaultTableModel tableModel = new DefaultTableModel(null, columnas);
+
+        while(rs.next()){
+            registros[0] = rs.getInt("ingrediente_id")+"";
+            registros[1] = rs.getString("Ingrediente");
+            registros[2] = rs.getString("Existencia");
+            registros[3] = rs.getString("Restan");
+            tableModel.addRow(registros);
+        }
+        return tableModel;
+    }
+
+    public DefaultTableModel vistaIngredientesMasUsados() throws SQLException{
+        query = "select * from vista_IngredientesMasUsados";
+        ResultSet rs = connection.executeQuery(query);
+        String[] columnas = {"Nombre", "Presente en alimentos diferentes"};
+        String[] registros = new String[columnas.length];
+        DefaultTableModel tableModel = new DefaultTableModel(null, columnas);
+
+        while(rs.next()){
+            registros[0] = rs.getString("nombre");
+            registros[1] = rs.getInt("Cant") + "";
+            tableModel.addRow(registros);
+        }
+
+        return tableModel;
+    }
+
+    public DefaultTableModel vistaAlergicos() throws SQLException{
+        query = "select * from VW_Alergias";
+        ResultSet rs = connection.executeQuery(query);
+        String[] columnas = {"Nombre", "Grado y grupo", "Ingrediente"};
+        String[] registros = new String[columnas.length];
+        DefaultTableModel tableModel = new DefaultTableModel(null,columnas);
+
+        while(rs.next()){
+            registros[0] = rs.getString("Nombre");
+            registros[1] = rs.getInt("Grado") + "° " + rs.getString("Grupo");
+            registros[2] = rs.getString("IngredienteMedida");
+            tableModel.addRow(registros);
+        }
+
+        return tableModel;
+    }
 
     public void abrirTran() throws SQLException {
         connection.execute("begin tran");

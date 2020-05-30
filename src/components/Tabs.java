@@ -7,10 +7,11 @@ public class Tabs {
     public JPanel panelTabs;
     public JTabbedPane tabbedPane;
 
-    public Tabs(JPanel formTut, JPanel modTut, JPanel formAlu) {
+    public Tabs(JPanel formTut, JPanel modTut, JPanel formAlu, JPanel tablaVistas) {
         tabbedPane.addTab("Tutores", formTut);
         tabbedPane.addTab("Modificar Tutor", modTut);
         tabbedPane.add("Alumnos", formAlu);
+        tabbedPane.add("Consultas", tablaVistas);
         panelTabs.add(tabbedPane);
     }
 

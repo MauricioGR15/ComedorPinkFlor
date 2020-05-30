@@ -8,6 +8,7 @@ package comedorpinkflor;
 import components.*;
 import controllers.AgregarAlumnos;
 import controllers.AgregarTutores;
+import controllers.ConConsultas;
 import controllers.ModificarCon;
 import models.Modelo;
 
@@ -37,12 +38,14 @@ public class ComedorPinkFlor {
         FormularioTutores formularioTutores = new FormularioTutores();
         ModificarTutor modificarTutor = new ModificarTutor();
         FormularioAlumno formularioAlumno = new FormularioAlumno();
-        Tabs tabs = new Tabs(formularioTutores.Tutores, modificarTutor.ModificarTutor, formularioAlumno.Alumno);
+        Consultas consultas = new Consultas();
+        Tabs tabs = new Tabs(formularioTutores.Tutores, modificarTutor.ModificarTutor, formularioAlumno.Alumno, consultas.Consultas);
 
         //Controladores
         AgregarTutores contAddTutores = new AgregarTutores(formularioTutores, modelo);
         ModificarCon conModTutor = new ModificarCon(modificarTutor, modelo);
         AgregarAlumnos conAddAlumnos = new AgregarAlumnos(formularioAlumno, modelo);
+        ConConsultas conConsultas = new ConConsultas(consultas, modelo);
 
 
 
