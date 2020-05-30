@@ -34,7 +34,7 @@ BEGIN
 BEGIN TRY
 BEGIN TRANSACTION
 INSERT Into Menus VALUES
-(GETDATE())
+(GETDATE(),0)
 --variable para cachar la PK del menu mas reciente e insertarlo en MC
 DECLARE @ID_Menu int = (SELECT top 1 menu_id FROM Menus order by menu_id desc)
 insert into MenuContenido VALUES
@@ -75,7 +75,6 @@ END
 --3. Procedimiento para agregar un tutor y alumno
 go
 CREATE PROCEDURE SP_Alumno_Tutor
---variables que se cacharan en el programa 
 @RFC VARCHAR(13),@nomT VARCHAR(30),@apT VARCHAR(30),@amT VARCHAR(30),@trabjo VARCHAR(30),
 @Matricula INT,@noA VARCHAR(30),@apA VARCHAR(30),@amA VARCHAR(30),@grado TINYINT,@grupo CHAR(1)
 as
@@ -104,14 +103,15 @@ PRINT 'Alumno con matriula repetida'
 End
 -- datos pa probarel SP
 EXEC SP_Alumno_Tutor 'paia990613hsr','angel','prado','isiordia','Estudiante',201618,'juan','perez','garcia',1,'A'
-go
+
 
 --4. SP para hacer la orden semanal
+GO
 CREATE PROCEDURE SP_Orden_Semanal
 @ComidaL int,@ComidaMa int,@ComidaMi int,@ComidaJ int,@ComidaV int,
 @BebidaL int,@BebidaMa int,@BebidaMi int,@BebidaJ int,@BebidaV int,
 @PostreL int,@PostreMa int,@PostreMi int,@PostreJ int,@PostreV int,
-@Matricula INT,--tenemos que ver como vamos a cachar la matricula,RFC y el ID Menu del lado del cliente
+@Matricula INT,
 @ID_Menu INT,
 @Especial BIT,
 @RFC VARCHAR(13)
@@ -157,12 +157,12 @@ END
 --5 SP para pagar la orden
 go
 CREATE PROCEDURE SP_Pago_Orden
-@ID_Orden int, @RFC NVARCHAR(13),@Espececial bit
+@RFC NVARCHAR(13),@Espececial bit
 as
 BEGIN
 BEGIN TRY
 	BEGIN TRANSACTION
-
+	DECLARE @ID_Orden INT = (SELECT top 1 orden_id from Ordenes order by orden_id desc)
 	declare @total money = (select sum(a.costo) from OrdenDesglosada od inner join Alimentos a on od.alimento_ID = a.alimento_id
 	inner JOIN Ordenes o on o.orden_id =od.orden_id
 	WHERE od.orden_id = @ID_Orden)
@@ -191,13 +191,17 @@ END
 go
 CREATE PROCEDURE SP_Insert_Alimento
 @nombre NVARCHAR(30), @tipo char(1),@costo money,
-@carbos money, @calos money,@prote money, @gras money
+@carbos money, @calos money,@prote money, @gras money,
+@in NVARCHAR(30), @ic money
 AS
 BEGIN
 BEGIN TRY
 	BEGIN TRANSACTION
 	INSERT into Alimentos VALUES
 	(@nombre,@tipo,@costo,@carbos,@calos,@prote,@gras)
+
+	EXEC SP_Ingredientes_Temporal @in,@ic
+	EXEC SP_Temporal_To_Contenido
 END TRY
 
 BEGIN CATCH
@@ -283,7 +287,7 @@ END
 
 
 -- ## TRIGGERS ##
---1. Trigger para ver si la orden del padre contiene algo a lo que el nino es alergico
+--1. Trigger para ver si la orden del padre contiene algo a lo que el alumno es alergico
 go
 
 CREATE TRIGGER NewOrden ON Servicios.OrdenDesglosada--nombre del trigger
@@ -308,18 +312,18 @@ DELETE from OrdenDesglosada WHERE orden_id = @ID_Last_Orden
 DELETE from Ordenes WHERE orden_id = @ID_Last_Orden
 
 END
---drop TRIGGER NewOrden
+
 
 --para probar con una alumno alergico
-go
-insert into Ordenes VALUES
-(181517,GETDATE(),GETDATE(),0,1)
+--go
+--insert into Ordenes VALUES
+--(181517,GETDATE(),GETDATE(),0,1)
 --select*FROM Ordenes
-go
-DECLARE @ID int = (select top 1 orden_id from Ordenes order by orden_id desc)
-PRINT @ID
-INSERT into OrdenDesglosada VALUES
-(@ID,1,'Lunes')
+--go
+--DECLARE @ID int = (select top 1 orden_id from Ordenes order by orden_id desc)
+--PRINT @ID
+--INSERT into OrdenDesglosada VALUES
+--(@ID,1,'Lunes')
 --select*FROM OrdenDesglosada
 
 --2. Trigger para checar que la orden solo se haga con 3 dias maximos de anticipacion
@@ -340,10 +344,10 @@ ROLLBACK
 END
 
 --valores pa probar
-INSERT into Ordenes VALUES
-(201648,GETDATE(),GETDATE(),0,2)
-SELECT*FROM Alumnos
-SELECT*FROM Ordenes
+--INSERT into Ordenes VALUES
+--201648,GETDATE(),GETDATE(),0,2)
+--SELECT*FROM Alumnos
+--SELECT*FROM Ordenes
 
 --Agregar alumnos y tutores (Insertar)
 --Insertar un alimento y su  contenido (PA)
@@ -361,7 +365,6 @@ CREATE table #IngTemporal (
 	id_alimento INT,
 	id_ingrediente INT,
 	cantidad money
-
 )
 END
 --4. Trigger para eliminar la tabla temporal
@@ -372,3 +375,5 @@ as
 BEGIN
 drop table #IngTemporal
 END
+
+--5. 
