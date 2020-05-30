@@ -48,7 +48,8 @@ CREATE TABLE Alimentos(
 
 CREATE TABLE Menus(
     menu_id INT identity primary key,
-    fechaCreacion date
+    fechaCreacion date,
+    menuActivo bit
 )
 
 CREATE TABLE MenuContenido(
