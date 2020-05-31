@@ -1,12 +1,14 @@
 package components;
 
+import classes.Ingrediente;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class BajaAlergias {
     public JTable tabla;
     public JComboBox<String> cb_alumnos;
-    public JComboBox<String> cb_alergias;
+    public JComboBox<Ingrediente> cb_alergias;
     public JButton btn_baja;
     public JPanel BajaAlergias;
 
@@ -82,7 +84,7 @@ public class BajaAlergias {
         btn_baja = new JButton();
         Font btn_bajaFont = this.$$$getFont$$$("Arial Rounded MT Bold", -1, 14, btn_baja.getFont());
         if (btn_bajaFont != null) btn_baja.setFont(btn_bajaFont);
-        btn_baja.setText("Button");
+        btn_baja.setText("Quitar");
         gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 2;
