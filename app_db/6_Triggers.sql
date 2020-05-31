@@ -98,3 +98,35 @@ BEGIN
 	SET total = total - @cantidad
 	WHERE pago_id = @pago_id
 END
+
+--Trigger para crear la tabla temporal de para el contenido del alimento
+go
+CREATE TRIGGER TablaTemporal ON comida.Alimentos
+FOR insert
+as
+BEGIN
+CREATE table #IngTemporal (
+	id_alimento INT,
+	id_ingrediente INT,
+	cantidad money
+)
+END
+--Trigger para eliminar la tabla temporal
+go
+CREATE TRIGGER DeleteTemporal ON comida.AlimentoContenido
+FOR insert
+as
+BEGIN
+drop table #IngTemporal
+END
+--Trigger para ver si la matricula ya existe en la BD 
+GO
+create trigger EmptyOrDupeAlumnos on Escolar.Alumnos
+for INSERT
+as
+DECLARE @matricula int = (select top 1 matricula from Escolar.Alumnos order by matricula desc)
+if exists (SELECT matricula from Escolar.Alumnos where matricula = @matricula)
+BEGIN
+	rollback
+    RAISERROR ('Matricula Duplicada', 16, 1);
+END
