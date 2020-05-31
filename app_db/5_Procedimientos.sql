@@ -2,7 +2,9 @@ use ComedorPinkFlor
 --Procedimientos Almacenados
 --1 Saber que Comidas puedo hacer con los ingredientes que se tienen el almacen
 go
-CREATE PROCEDURE SP_ComidasDisponibles as
+CREATE PROCEDURE SP_ComidasDisponibles
+as
+BEGIN
 SELECT a.nombre as Comidas FROM Comida.Alimentos a 
 INNER JOIN Comida.AlimentoContenido ac
 on a.alimento_id = ac.alimento_id
@@ -16,7 +18,7 @@ on i.ingrediente_id=im.ing_id
 WHERE cantidad < 1
 )
 GROUP BY a.nombre
-EXEC SP_ComidasDisponibles
+END
 
 --2 SP para agregar el menu 
 go
@@ -32,7 +34,7 @@ BEGIN
 BEGIN TRY
 	BEGIN TRANSACTION
 		INSERT Into Servicios.Menus VALUES
-		(GETDATE())
+		(GETDATE(),0)
 		--variable para cachar la PK del menu mas reciente e insertarlo en MC
 		DECLARE @ID_Menu int = (SELECT top 1 menu_id FROM Servicios.Menus order by menu_id desc)
 		insert into Servicios.MenuContenido VALUES
@@ -62,6 +64,7 @@ ROLLBACK TRANSACTION
 RAISERROR('Hubo un error al registrar el menu',16,1)
 END CATCH
 END
+
 
 --3. Procedimiento para agregar un tutor y alumno
 go

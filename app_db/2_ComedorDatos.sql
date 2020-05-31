@@ -463,7 +463,7 @@ insert into PagoOrden values --30
 	(27, 'MALO871112LF5', 760),
 	(28, 'MEMG930828GRG', 650),
 	(29, 'LOMT920505LO5', 580),
-	(30, 'PILR750814JD3', 590),
+	(30, 'PILR750814JD3', 590)
 
 
 insert into PagoConcepto values --90
@@ -556,7 +556,7 @@ insert into PagoConcepto values --90
 	(29, 220, '20191217'),
 	(30, 310, '20191207'),
 	(30, 140, '20191208'),
-	(30, 140, '20191209'),
+	(30, 140, '20191209')
 
 
 --Sopa de verduras
