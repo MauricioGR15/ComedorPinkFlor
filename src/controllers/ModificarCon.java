@@ -35,8 +35,18 @@ public class ModificarCon {
         return new Tutor(rfc, nombre, apellidoP, apellidoM, trabajo, null);
     }
 
+    private boolean checaEspacios(){
+        if(vista.tf_rfc.getText().isEmpty() || vista.tf_nombre.getText().isEmpty() || vista.tf_apellidoPat.getText().isEmpty() ||
+        vista.tf_apellidoMat.getText().isEmpty() || vista.tf_trabajo.getText().isEmpty()){
+            JOptionPane.showMessageDialog(null, "Hay espacios vacíos");
+            return false;
+        }
+        return true;
+    }
+
     public void escuchadores(){
         vista.btn_buscar.addActionListener(e -> {
+
             try {
                 Tutor tutor = modelo.selectTutor(vista.tf_rfc.getText());
                 setState(tutor);
@@ -46,6 +56,8 @@ public class ModificarCon {
         });
 
         vista.btn_modificar.addActionListener(e -> {
+            if(!checaEspacios())
+                return;
             try {
                 if(modelo.updateTutor(getState())){
                     JOptionPane.showMessageDialog(null, "Actualizado con éxito");

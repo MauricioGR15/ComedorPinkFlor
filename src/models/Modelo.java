@@ -1,6 +1,7 @@
 package models;
 
 import classes.Alumno;
+import classes.Ingrediente;
 import classes.Tutor;
 
 import javax.swing.table.DefaultTableModel;
@@ -178,6 +179,31 @@ public class Modelo {
         }
         return alumnos;
     }
+
+    public ArrayList<Ingrediente> alergiaDeAlumno(int matricula) throws SQLException {
+        query = "select al.ingrediente_id, nombre from \n" +
+                "Escolar.Alergias al inner join Comida.Ingredientes c\n" +
+                "on al.ingrediente_id = c.ingrediente_id \n" +
+                "where alu_matricula = " + matricula;
+        ResultSet rs = connection.executeQuery(query);
+        ArrayList<Ingrediente> ingredientes = new ArrayList<>();
+        int id;
+        String nombre;
+        while (rs.next()){
+            id = rs.getInt("ingrediente_id");
+            nombre = rs.getString("nombre");
+            Ingrediente ingrediente = new Ingrediente(id,nombre);
+            ingredientes.add(ingrediente);
+        }
+
+        return ingredientes;
+    }
+
+    public boolean bajaAlergia(int matricula, int id) throws SQLException {
+        query = "delete from Escolar.Alergias where alu_matricula = "+ matricula +" and ingrediente_id = " + id;
+        return connection.execute(query);
+    }
+
 
 
     public void abrirTran() throws SQLException {

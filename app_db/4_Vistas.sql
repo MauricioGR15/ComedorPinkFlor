@@ -49,7 +49,6 @@ on a.alimento_id = od.alimento_ID
 WHERE  DATENAME(week, GETDATE()) = DATENAME(week,o.fecha)
 group by nombre
 
-select * from Escolar.TelefonosTutores
 
 
 --Vista para obtener ingredientes cercanos a caducar o caducados
@@ -64,6 +63,7 @@ Comida.Ingredientes I inner join Comida.IngredienteMedida IM
 on I.ingrediente_id=IM.ing_id
 where MONTH(fechaCad)=MONTH(GETDATE())
 
+go
 select * from vista_ingredientesPorCaducar
 
 --Vista para ingredientes mas usados en Alimentos
@@ -75,9 +75,6 @@ inner join Comida.Ingredientes I on
 I.ingrediente_id = T.ingrediente_id
 order by (Cant) desc
 
-select * from vista_IngredientesMasUsados
-
-select * from Comida.Alimentos
 
 go
 create view vista_niñosAlergias as
@@ -86,3 +83,31 @@ Escolar.Alumnos a inner join Escolar.Alergias a2
 on a.matricula = a2.alu_matricula
 inner join Comida.Ingredientes c
 on a2.ingrediente_id = c.ingrediente_id
+
+go 
+select distinct a.matricula from Escolar.Alumnos a INNER JOIN Escolar.Alergias a2
+on a.matricula = a2.alu_matricula
+
+go
+
+select al.ingrediente_id, nombre from 
+Escolar.Alergias al inner join Comida.Ingredientes c
+on al.ingrediente_id = c.ingrediente_id 
+where alu_matricula = 171567
+
+go
+select * from Escolar.Alergias where alu_matricula = 171567 and ingrediente_id = 5
+
+go
+TRUNCATE table Escolar.Alergias
+go
+insert Escolar.Alergias values 
+(171567, 10),
+(171567, 11),
+(171567, 12),
+(171567, 14),
+(171567, 5),
+(181517,1)
+--(181517,2),
+--(181517,3)
+
