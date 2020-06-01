@@ -298,29 +298,6 @@ END
 
 --exec SP_Borrar_Tutor '1234'
 
---9 Para dar de alta a un Tutor
-go
-alter PROCEDURE SP_InsertaTutor
-@rfc NVARCHAR(13),
-@nombre NVARCHAR(30),
-@apePaterno NVARCHAR(30),
-@apeMaterno NVARCHAR(30),
-@trabajo NVARCHAR(50)
-as
-BEGIN
-BEGIN TRANSACTION tr_tutor
-if not exists (SELECT rfc from Escolar.Tutores where RFC = @rfc)
-begin
-insert into Escolar.Tutores (RFC, nombre, apellidoP, apellidoM, trabajo) values (@rfc, @nombre, @apePaterno, @apeMaterno, @trabajo)
-COMMIT TRANSACTION
-END
-ELSE
-BEGIN
-ROLLBACK TRANSACTION tr_tutor
-	RAISERROR('RFC REPETIDA',16,1)
-	
-END
-END
 
 --Insercion de telefonos
 GO
@@ -355,7 +332,7 @@ where rfc = @rfc
 
 --Insercion de alumno
 Go
-alter PROCEDURE sp_insertALumno
+create PROCEDURE sp_insertALumno
 @matricula int ,
 @nombre NVARCHAR(30) ,
 @apellidoP NVARCHAR(30),
@@ -380,3 +357,32 @@ END
 END
 SELECT*FROM Escolar.Tutores
 
+--9 Para dar de alta a un Tutor
+go
+alter PROCEDURE SP_InsertaTutor
+@rfc NVARCHAR(13),
+@nombre NVARCHAR(30),
+@apePaterno NVARCHAR(30),
+@apeMaterno NVARCHAR(30),
+@trabajo NVARCHAR(50)
+as
+BEGIN
+
+BEGIN TRANSACTION tr_tutor
+BEGIN TRY
+if not exists (SELECT RFC from Escolar.Tutores where rfc = @rfc)
+begin
+insert into Escolar.Tutores (RFC, nombre, apellidoP, apellidoM, trabajo) values (@rfc, @nombre, @apePaterno, @apeMaterno, @trabajo)
+COMMIT TRANSACTION
+end
+else
+BEGIN
+RAISERROR('RFC REPETIDA',16,1)
+end
+END TRY
+
+BEGIN catch
+ROLLBACK TRANSACTION tr_tutor
+END catch
+END
+select*FROM Escolar.Tutores
