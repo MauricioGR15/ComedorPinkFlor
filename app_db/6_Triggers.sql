@@ -8,14 +8,14 @@ FOR INSERT--tigger para insert
 as 
 BEGIN
 --cachamos la matriucla de la orden mas reciente
-DECLARE @matricula int = (SELECT top 1 matricula FROM Ordenes ORDER by orden_id desc)
+DECLARE @matricula int = (SELECT top 1 matricula FROM Servicios.Ordenes ORDER by orden_id desc)
 --checamos si alguna comida que esta en la orden contiene un ingrediente al cual el alumno con la matricula anterior
 --es alergio
 if exists (select a.ingrediente_id FROM Servicios.OrdenDesglosada od INNER JOIN Comida.AlimentoContenido ac 
 on ac.alimento_id = od.alimento_id inner JOIN Comida.Ingredientes i 
 on i.ingrediente_id = ac.ingrediente_id INNER JOIN Escolar.Alergias a 
 on a.ingrediente_id = i.ingrediente_id
-WHERE a.alu_matricula = 171567
+WHERE a.alu_matricula = @matricula
 GROUP by a.ingrediente_id)
 BEGIN
 --si es alergico, imprime el mensaje, cacha el id de la orden y la borra 
@@ -113,3 +113,4 @@ BEGIN
 	UPDATE Servicios.PagoOrden set total = @nuevoTotal WHERE pago_id = @id_pago
 	END
 END
+--EXEC SP_Pago_Orden 31,'LOMT920505LO5',1

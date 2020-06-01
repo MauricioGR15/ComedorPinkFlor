@@ -162,7 +162,7 @@ EXEC SP_Orden_Semanal
 1,3,4,6,7,
 12,13,14,15,16,
 19,20,21,22,23,
-171567,
+201648,
 '2020-05-31',
 1,1
 */
@@ -200,7 +200,7 @@ END
 
 /* 
 select*FROM servicios.Ordenes
-EXEC SP_Pago_Orden 5,'LOMT920505LO5',1
+EXEC SP_Pago_Orden 31,'LOMT920505LO5',1
 
  select*FROM Servicios.PagoOrden
  select*FROM Servicios.PagoConcepto
@@ -400,6 +400,7 @@ ROLLBACK TRANSACTION tr_tutor
 END CATCH
 END
 
+/*
 select*FROM Escolar.Tutores
 select*FROM Escolar.Alumnos
- 
+ */
