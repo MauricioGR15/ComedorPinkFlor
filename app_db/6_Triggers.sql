@@ -15,22 +15,27 @@ if exists (select a.ingrediente_id FROM Servicios.OrdenDesglosada od INNER JOIN 
 on ac.alimento_id = od.alimento_id inner JOIN Comida.Ingredientes i 
 on i.ingrediente_id = ac.ingrediente_id INNER JOIN Escolar.Alergias a 
 on a.ingrediente_id = i.ingrediente_id
-WHERE a.alu_matricula = @matricula
+WHERE a.alu_matricula = 171567
 GROUP by a.ingrediente_id)
+BEGIN
 --si es alergico, imprime el mensaje, cacha el id de la orden y la borra 
 PRINT 'Es alergico'
 declare @ID_Last_Orden int = (select top 1 orden_id from Servicios.OrdenDesglosada order by orden_id desc)
 --aqui podriamos poner un rollback en ves de eso
 DELETE from Servicios.OrdenDesglosada WHERE orden_id = @ID_Last_Orden
 DELETE from Servicios.Ordenes WHERE orden_id = @ID_Last_Orden
+END
 
+ELSE
+BEGIN
+PRINT 'no es alergico'
+END
 END
 --para probar con una alumno alergico
 /*insert into Servicios.Ordenes VALUES
 (181517,GETDATE(),GETDATE(),0,1)
 go
 DECLARE @ID int = (select top 1 orden_id from Servicios.Ordenes order by orden_id desc)
-PRINT @ID
 INSERT into Servicios.OrdenDesglosada VALUES
 (@ID,1,'Lunes')
 SELECT*FROM Servicios.Ordenes
@@ -97,17 +102,20 @@ CREATE TRIGGER ExtraEspecial ON Servicios.PagoOrden
 AFTER INSERT
 as
 BEGIN 
+--cachamos el bit para ver si especial
 	DECLARE @especial BIT = (select top 1 especial from Servicios.Ordenes order by orden_id desc)
 	if(@especial=1)
+	--si es espcial
 	BEGIN
+	--agarramos el total
 	DECLARE @nuevoTotal money = (select top 1 total from Servicios.PagoOrden order by pago_id desc)
+	--agarramos el id del pago
 	DECLARE @id_pago int =(select top 1 pago_id from Servicios.PagoOrden order by pago_id desc)
+	--imprmimos el total anterior y el total nuevo +10%
 	PRINT @nuevoTotal
 	SET @nuevoTotal += (@nuevoTotal*0.1)
 	PRINT @nuevoTotal
+	--hace el update para ponerle el nuevo total
 	UPDATE Servicios.PagoOrden set total = @nuevoTotal WHERE pago_id = @id_pago
 	END
 END
-
---EXEC SP_Pago_Orden 21,'LOMT920505LO5',1
---SELECT*FROM Servicios.PagoOrden 

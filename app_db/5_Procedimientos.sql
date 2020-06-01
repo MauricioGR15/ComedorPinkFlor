@@ -19,7 +19,7 @@ WHERE cantidad < 1
 )
 GROUP BY a.nombre
 END
-
+--EXEC SP_ComidasDisponibles
 --2 SP para agregar el menu 
 go
 CREATE PROCEDURE SP_Menu_Semanal
@@ -103,7 +103,7 @@ End
 
 --4. SP para hacer la orden semanal
 go
-ALTER PROCEDURE SP_Orden_Semanal
+Create PROCEDURE SP_Orden_Semanal
 @ComidaL int,@ComidaMa int,@ComidaMi int,@ComidaJ int,@ComidaV int,
 @BebidaL int,@BebidaMa int,@BebidaMi int,@BebidaJ int,@BebidaV int,
 @PostreL int,@PostreMa int,@PostreMi int,@PostreJ int,@PostreV int,
@@ -154,14 +154,17 @@ END
 /*
 SELECT*FROM servicios.Ordenes
 SELECT*FROM Servicios.OrdenDesglosada
+SELECT*FROM Escolar.Alergias
 
+
+depues del trigger de alergia va a decir que es alergico
 EXEC SP_Orden_Semanal 
 1,3,4,6,7,
 12,13,14,15,16,
 19,20,21,22,23,
 171567,
 '2020-05-31',
-1,0
+1,1
 */
 
 --5 SP para pagar la orden
@@ -194,7 +197,10 @@ BEGIN CATCH
 END CATCH
 END
 
-/* EXEC SP_Pago_Orden 20,'LOMT920505LO5',0
+
+/* 
+select*FROM servicios.Ordenes
+EXEC SP_Pago_Orden 5,'LOMT920505LO5',1
 
  select*FROM Servicios.PagoOrden
  select*FROM Servicios.PagoConcepto
