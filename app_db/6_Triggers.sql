@@ -8,7 +8,7 @@ FOR INSERT--tigger para insert
 as 
 BEGIN
 --cachamos la matriucla de la orden mas reciente
-DECLARE @matricula int = (SELECT top 1 matricula FROM Servicios.Ordenes ORDER by orden_id desc)
+DECLARE @matricula int = (SELECT top 1 matricula FROM inserted)
 --checamos si alguna comida que esta en la orden contiene un ingrediente al cual el alumno con la matricula anterior
 --es alergio
 if exists (select a.ingrediente_id FROM Servicios.OrdenDesglosada od INNER JOIN Comida.AlimentoContenido ac 
@@ -42,7 +42,7 @@ create TRIGGER PreOrden ON Servicios.Ordenes
 FOR insert
 as 
 BEGIN
-DECLARE @day NVARCHAR(8) = FORMAT((select top 1 fecha from Servicios.Ordenes order by orden_id desc),'dddd')
+DECLARE @day NVARCHAR(8) = FORMAT((select fecha from inserted),'dddd')
 PRINT @day
 if(@day='Monday')
 PRINT'Es lunes, ya paso el tiempo para las ordenes de la semana'
@@ -66,6 +66,7 @@ BEGIN
 	--Obtenemos el precio total de la suma de los costos de los alimentos
 	Set @total = (Select top(1) Total from(Select orden_id, SUM(costo)Total from Servicios.OrdenDesglosada OD 
     inner join Comida.Alimentos A on OD.alimento_ID = A.alimento_id 
+	WHERE orden_id = @orden_id
 	GROUP BY orden_id)T)
 	--Actualizamos el total del pago orden correspondiente
 	UPDATE PagoOrden
@@ -97,14 +98,14 @@ AFTER INSERT
 as
 BEGIN 
 --cachamos el bit para ver si especial
-	DECLARE @especial BIT = (select top 1 especial from Servicios.Ordenes order by orden_id desc)
+	DECLARE @especial BIT = (select especial from inserted)
 	if(@especial=1)
 	--si es espcial
 	BEGIN
 	--agarramos el total
-	DECLARE @nuevoTotal money = (select top 1 total from Servicios.PagoOrden order by pago_id desc)
+	DECLARE @nuevoTotal money = (select total from inserted)
 	--agarramos el id del pago
-	DECLARE @id_pago int =(select top 1 pago_id from Servicios.PagoOrden order by pago_id desc)
+	DECLARE @id_pago int =(select pago_id from inserted)
 	--imprmimos el total anterior y el total nuevo +10%
 	PRINT @nuevoTotal
 	SET @nuevoTotal += (@nuevoTotal*0.1)
