@@ -87,9 +87,8 @@ END TRY
 	END CATCH
 End
 -- datos pa probarel SP
-EXEC SP_Alumno_Tutor 'paia990613hsr','angel','prado','isiordia','Estudiante',201618,'juan','perez','garcia',1,'A'
+--EXEC SP_Alumno_Tutor 'paia990613hsr','angel','prado','isiordia','Estudiante',201618,'juan','perez','garcia',1,'A'
 go
-
 --4. SP para hacer la orden semanal
 CREATE PROCEDURE SP_Orden_Semanal
 @ComidaL int,@ComidaMa int,@ComidaMi int,@ComidaJ int,@ComidaV int,
@@ -275,14 +274,25 @@ alter PROCEDURE SP_InsertaTutor
 @apePaterno NVARCHAR(30),
 @apeMaterno NVARCHAR(30),
 @trabajo NVARCHAR(50)
-AS
-begin 
-	insert into Escolar.Tutores (RFC, nombre, apellidoP, apellidoM, trabajo) values (@rfc, @nombre, @apePaterno, @apeMaterno, @trabajo)
-end
+as
+BEGIN
+BEGIN TRANSACTION
+if not exists (SELECT rfc from Escolar.Tutores where rfc = @RFC)
+begin
+insert into Escolar.Tutores (RFC, nombre, apellidoP, apellidoM, trabajo) values (@rfc, @nombre, @apePaterno, @apeMaterno, @trabajo)
+COMMIT TRANSACTION
+END
+ELSE
+BEGIN
+ROLLBACK TRANSACTION
+	RAISERROR('RFC REPETIDA',16,1)
+	
+END
+END
 
 --Insercion de telefonos
 GO
-alter PROCEDURE SP_InsertTelefono
+create PROCEDURE SP_InsertTelefono
 @rfc NVARCHAR(13), @tel numeric(10)
 AS
 begin try
@@ -297,7 +307,7 @@ select * from Escolar.Tutores where rfc = '1'
 
 --Actualizar tutor
 GO
-alter PROCEDURE sp_updateTutor
+create PROCEDURE sp_updateTutor
 @rfc NVARCHAR(13),
 @nombre NVARCHAR(30),
 @apePaterno NVARCHAR(30),
@@ -313,7 +323,7 @@ where rfc = @rfc
 
 --Insercion de alumno
 Go
-create PROCEDURE sp_insertALumno
+alter PROCEDURE sp_insertALumno
 @matricula int ,
 @nombre NVARCHAR(30) ,
 @apellidoP NVARCHAR(30),
@@ -322,8 +332,19 @@ create PROCEDURE sp_insertALumno
 @grupo CHAR(1),
 @RFC NVARCHAR(13)
 as
-insert into Escolar.Alumnos values (@matricula,@nombre, @apellidoP, @apellidoM, @grado, @grupo, @RFC)
-
---Dar de baja/eliminar una alargia de un niño
-select * from Escolar.Alergias
+BEGIN
+BEGIN TRANSACTION
+if not exists (SELECT matricula from Escolar.Alumnos where matricula = @matricula)
+begin
+	insert into Escolar.Alumnos values (@matricula,@nombre, @apellidoP, @apellidoM, @grado, @grupo, @RFC)
+COMMIT TRANSACTION
+END
+ELSE
+BEGIN
+ROLLBACK TRANSACTION
+	RAISERROR('RFC REPETIDA',16,1)
+	
+END
+END
+SELECT*FROM Escolar.Tutores
 

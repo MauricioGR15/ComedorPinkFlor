@@ -1,5 +1,6 @@
 -- ## TRIGGERS ##
 --Trigger para ver si la orden del padre contiene algo a lo que el nino es alergico
+use ComedorPinkFlor
 go
 
 CREATE TRIGGER NewOrden ON Servicios.OrdenDesglosada--nombre del trigger
@@ -118,15 +119,4 @@ FOR insert
 as
 BEGIN
 drop table #IngTemporal
-END
---Trigger para ver si la matricula ya existe en la BD 
-GO
-create trigger EmptyOrDupeAlumnos on Escolar.Alumnos
-for INSERT
-as
-DECLARE @matricula int = (select top 1 matricula from Escolar.Alumnos order by matricula desc)
-if exists (SELECT matricula from Escolar.Alumnos where matricula = @matricula)
-BEGIN
-	rollback
-    RAISERROR ('Matricula Duplicada', 16, 1);
 END
