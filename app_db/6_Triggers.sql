@@ -3,7 +3,7 @@
 use ComedorPinkFlor
 go
 
-CREATE TRIGGER NewOrden ON Servicios.OrdenDesglosada--nombre del trigger
+alter TRIGGER NewOrden ON Servicios.OrdenDesglosada--nombre del trigger
 FOR INSERT--tigger para insert
 as 
 BEGIN
@@ -21,8 +21,8 @@ GROUP by a.ingrediente_id)
 PRINT 'Es alergico'
 declare @ID_Last_Orden int = (select top 1 orden_id from Servicios.OrdenDesglosada order by orden_id desc)
 --aqui podriamos poner un rollback en ves de eso
-DELETE from OrdenDesglosada WHERE orden_id = @ID_Last_Orden
-DELETE from Ordenes WHERE orden_id = @ID_Last_Orden
+DELETE from Servicios.OrdenDesglosada WHERE orden_id = @ID_Last_Orden
+DELETE from Servicios.Ordenes WHERE orden_id = @ID_Last_Orden
 
 END
 --drop TRIGGER NewOrden
@@ -98,25 +98,4 @@ BEGIN
 	UPDATE Servicios.PagoOrden
 	SET total = total - @cantidad
 	WHERE pago_id = @pago_id
-END
-
---Trigger para crear la tabla temporal de para el contenido del alimento
-go
-CREATE TRIGGER TablaTemporal ON comida.Alimentos
-FOR insert
-as
-BEGIN
-CREATE table #IngTemporal (
-	id_alimento INT,
-	id_ingrediente INT,
-	cantidad money
-)
-END
---Trigger para eliminar la tabla temporal
-go
-CREATE TRIGGER DeleteTemporal ON comida.AlimentoContenido
-FOR insert
-as
-BEGIN
-drop table #IngTemporal
 END
