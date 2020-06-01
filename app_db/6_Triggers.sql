@@ -3,7 +3,7 @@
 use ComedorPinkFlor
 go
 
-alter TRIGGER NewOrden ON Servicios.OrdenDesglosada--nombre del trigger
+create TRIGGER OrdenAlergica ON Servicios.OrdenDesglosada--nombre del trigger
 FOR INSERT--tigger para insert
 as 
 BEGIN
@@ -25,45 +25,36 @@ DELETE from Servicios.OrdenDesglosada WHERE orden_id = @ID_Last_Orden
 DELETE from Servicios.Ordenes WHERE orden_id = @ID_Last_Orden
 
 END
---drop TRIGGER NewOrden
-
 --para probar con una alumno alergico
-go
-insert into Servicios.Ordenes VALUES
+/*insert into Servicios.Ordenes VALUES
 (181517,GETDATE(),GETDATE(),0,1)
---select*FROM Ordenes
 go
 DECLARE @ID int = (select top 1 orden_id from Servicios.Ordenes order by orden_id desc)
 PRINT @ID
 INSERT into Servicios.OrdenDesglosada VALUES
 (@ID,1,'Lunes')
---select*FROM OrdenDesglosada
+SELECT*FROM Servicios.Ordenes
+SELECT*FROM Servicios.OrdenDesglosada
+*/
 
--- Trigger para checar que la orden solo se haga con 3 dias maximos de anticipacion
+-- Trigger para checar que la orden se haya hecho almenos 3 dias antes
 go
-CREATE TRIGGER PreOrden ON Servicios.Ordenes--nombre del trigger
-FOR insert--tigger para insert
+create TRIGGER PreOrden ON Servicios.Ordenes
+FOR insert
 as 
 BEGIN
---cachamos la fecha de la orden y le agregamos 3 para ver si es antes solo por 3 dias
-DECLARE @day date = (select top 1 DATEADD(dd,3,fecha)from Servicios.Ordenes order by fecha desc)
+DECLARE @day NVARCHAR(8) = FORMAT((select top 1 fecha from Servicios.Ordenes order by orden_id desc),'dddd')
 PRINT @day
---vemos la fecha del siguiente lunes
-Declare @monday date = (select DATEADD(dd, -(DATEPART(dw, @day)-9), @day))
---comparamos ambas fechas , y @day es menor aun despues de sumarle 3 dias manda el mensaje
-if(@day<@monday)
-PRINT'Aun no puede ordenar'
+if(@day='Monday')
+PRINT'Es lunes, ya paso el tiempo para las ordenes de la semana'
 ROLLBACK
 END
 
 --valores pa probar
-INSERT into Ordenes VALUES
-(201648,GETDATE(),GETDATE(),0,2)
-SELECT*FROM Escolar.Alumnos
-SELECT*FROM Servicios.Ordenes
+/*INSERT into Servicios.Ordenes VALUES
+(201648,'2020-06-01',GETDATE(),0,2)
+*/
  
-
-
 --Trigger que calcula el precio despues que se actualiza la fecha al finalizar de insertar los alimentos de esa orden
 go
 CREATE TRIGGER CalcularPrecio ON Servicios.Ordenes
@@ -99,3 +90,24 @@ BEGIN
 	SET total = total - @cantidad
 	WHERE pago_id = @pago_id
 END
+
+--Trigger si al ordenar el menu es 'especial' cobrarle un 10% extra
+go
+CREATE TRIGGER ExtraEspecial ON Servicios.PagoOrden
+AFTER INSERT
+as
+BEGIN 
+	DECLARE @especial BIT = (select top 1 especial from Servicios.Ordenes order by orden_id desc)
+	if(@especial=1)
+	BEGIN
+	DECLARE @nuevoTotal money = (select top 1 total from Servicios.PagoOrden order by pago_id desc)
+	DECLARE @id_pago int =(select top 1 pago_id from Servicios.PagoOrden order by pago_id desc)
+	PRINT @nuevoTotal
+	SET @nuevoTotal += (@nuevoTotal*0.1)
+	PRINT @nuevoTotal
+	UPDATE Servicios.PagoOrden set total = @nuevoTotal WHERE pago_id = @id_pago
+	END
+END
+
+--EXEC SP_Pago_Orden 21,'LOMT920505LO5',1
+--SELECT*FROM Servicios.PagoOrden 
