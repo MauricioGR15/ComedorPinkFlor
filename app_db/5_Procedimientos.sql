@@ -75,6 +75,7 @@ END
 
 SELECT*FROM Comida.Alimentos
 SELECT*FROM Servicios.Menus
+SELECT*FROM Servicios.MenuContenido
 */
 
 --3. Procedimiento para agregar un tutor y alumno
@@ -97,17 +98,17 @@ END TRY
 	ROLLBACK TRANSACTION
 	END CATCH
 End
--- datos pa probarel SP
 
 --EXEC SP_Alumno_Tutor 'paia990613hsr','angel','prado','isiordia','Estudiante',201634,'juan','perez','garcia',1,'A'
 
 --4. SP para hacer la orden semanal
 go
-create PROCEDURE SP_Orden_Semanal
+ALTER PROCEDURE SP_Orden_Semanal
 @ComidaL int,@ComidaMa int,@ComidaMi int,@ComidaJ int,@ComidaV int,
 @BebidaL int,@BebidaMa int,@BebidaMi int,@BebidaJ int,@BebidaV int,
 @PostreL int,@PostreMa int,@PostreMi int,@PostreJ int,@PostreV int,
 @Matricula INT,
+@Fecha date,
 @ID_Menu INT,
 @Especial BIT
 as
@@ -116,7 +117,7 @@ as
 	BEGIN TRY
 
 	INSERT into Servicios.Ordenes VALUES
-	(@Matricula,GETDATE(),GETDATE(),@ID_Menu,@Especial)
+	(@Matricula,@Fecha,@Fecha,@Especial,@ID_Menu)
 
 	DECLARE @ID_Orden INT = (SELECT top 1 orden_id from Servicios.Ordenes order by orden_id desc)
 
@@ -150,22 +151,22 @@ as
 	END CATCH
 END
 
-/*SELECT*FROM Comida.Alimentos
-SELECT*FROM Escolar.Alumnos
-SELECT*FROM Servicios.MenuContenido
+/*
+SELECT*FROM servicios.Ordenes
 SELECT*FROM Servicios.OrdenDesglosada
 
 EXEC SP_Orden_Semanal 
 1,3,4,6,7,
 12,13,14,15,16,
 19,20,21,22,23,
-17171460,
-0,1,
+171567,
+'2020-05-31',
+1,0
 */
 
 --5 SP para pagar la orden
 go
-alter PROCEDURE SP_Pago_Orden
+create PROCEDURE SP_Pago_Orden
 @ID_Orden int, @RFC NVARCHAR(13),@Espececial bit
 as
 BEGIN
@@ -175,15 +176,12 @@ BEGIN TRANSACTION
 	declare @total money = (select sum(a.costo) from Servicios.OrdenDesglosada od 
 	inner join Comida.Alimentos a on od.alimento_ID = a.alimento_id
 	inner JOIN Servicios.Ordenes o on o.orden_id =od.orden_id
-	WHERE od.orden_id = 19)
-	--si es especial se le va a cobrar un 10% mas del total de la orden
-	if(@Espececial!=0)
-	set @total += @total/0.1
-	--hace la insercion a ambas tablas de pago
+	WHERE od.orden_id =@ID_Orden )
+
 	INSERT into Servicios.PagoOrden VALUES
 	(@ID_Orden,@RFC,@total)
-	--cachamos la orden mas reciente que hicimos
-	DECLARE @ID_Pago INT = (select top 1 orden_id from Servicios.PagoOrden order by orden_id desc)
+
+	DECLARE @ID_Pago INT = (select top 1 pago_id from Servicios.PagoOrden order by pago_id desc)
 	INSERT into Servicios.PagoConcepto VALUES
 	(@ID_Pago,@total,GETDATE())
 
@@ -191,12 +189,16 @@ BEGIN TRANSACTION
 END TRY
 
 BEGIN CATCH
-	RAISERROR('ERROR AL INSERTAR',16,1)
+	RAISERROR('ERROR AL PAGAR LA ORDEN',16,1)
 	ROLLBACK TRANSACTION
 END CATCH
 END
- EXEC SP_Pago_Orden 11,'ZEMP920120FE1',0
 
+/* EXEC SP_Pago_Orden 20,'LOMT920505LO5',0
+
+ select*FROM Servicios.PagoOrden
+ select*FROM Servicios.PagoConcepto
+*/
 --6 SPs para insertar un alimento y su contenido 
 go
 create PROCEDURE SP_Insert_Alimento
@@ -213,32 +215,35 @@ BEGIN TRY
 END TRY
 
 BEGIN CATCH
-	RAISERROR('ERROR AL INSERTAR',16,1)
+	RAISERROR('ERROR AL INSERTAR EL ALIMENTO',16,1)
 	ROLLBACK TRANSACTION
 END CATCH
 End
 
 go
-alter PROCEDURE SP_Ingredientes_Temporal
-@in NVARCHAR(30), @ic money
+CREATE PROCEDURE SP_Alimento_Contenido
+@in_id int, @ic money
 AS
-DECLARE @IngTemporal TABLE(id_alimento INT,id_ingrediente INT, cantidad money)
 BEGIN
+BEGIN TRY
+	BEGIN TRANSACTION
 DECLARE @ID_Ali INT = (select top 1 alimento_id from Comida.Alimentos order by alimento_id desc)
-	INSERT into @IngTemporal VALUES
-	(@ID_Ali, (select ingrediente_id from Comida.Ingredientes where nombre = @in), @ic)
-	SELECT* INTO comida.ingredientes FROM @IngTemporal
+	INSERT into Comida.AlimentoContenido VALUES
+	(@ID_Ali, @in_id, @ic)
+		commit TRANSACTION
+END TRY
+BEGIN CATCH
+	RAISERROR('ERROR AL INSERTAR EL CONTENIDO',16,1)
+	ROLLBACK TRANSACTION
+END CATCH
 END
 
-
-/*EXEC SP_Insert_Alimento 'taco','C',20,100,50,300,120
-select*FROM Comida.Alimentos 
-EXEC SP_Ingredientes_Temporal 'Tortilla',24
-EXEC SP_Ingredientes_Temporal 'Sirloin',13
-EXEC SP_Ingredientes_Temporal 'Aguacate',23
-select*from Comida.Ingredientes
-Exec SP_Temporal_To_Contenido
+/*select*FROM Comida.Ingredientes 
+EXEC SP_Insert_Alimento 'taco','C',25,11,171,10,10
+EXEC SP_Alimento_Contenido 14,'0.1'
+EXEC SP_Alimento_Contenido 24,'1'
 */
+
 
 --7 Para dar de baja a un Alumno
 go
@@ -270,8 +275,7 @@ END CATCH
 END
 
 --exec SP_Borrar_Alumno 171567
-
-select * from Escolar.Alumnos
+--select * from Escolar.Alumnos
 --8 Para dar de baja a un Tutor
 go
 CREATE PROCEDURE SP_Borrar_Tutor
@@ -301,7 +305,7 @@ END
 
 --Insercion de telefonos
 GO
-create PROCEDURE SP_InsertTelefono
+CREATE PROCEDURE SP_InsertTelefono
 @rfc NVARCHAR(13), @tel numeric(10)
 AS
 begin try
@@ -332,7 +336,7 @@ where rfc = @rfc
 
 --Insercion de alumno
 Go
-create PROCEDURE sp_insertALumno
+CREATE PROCEDURE sp_insertALumno
 @matricula int ,
 @nombre NVARCHAR(30) ,
 @apellidoP NVARCHAR(30),
@@ -357,9 +361,9 @@ END
 END
 SELECT*FROM Escolar.Tutores
 
---9 Para dar de alta a un Tutor
+-- Para dar de alta a un Tutor
 go
-alter PROCEDURE SP_InsertaTutor
+CREATE PROCEDURE SP_InsertaTutor
 @rfc NVARCHAR(13),
 @nombre NVARCHAR(30),
 @apePaterno NVARCHAR(30),
@@ -367,22 +371,29 @@ alter PROCEDURE SP_InsertaTutor
 @trabajo NVARCHAR(50)
 as
 BEGIN
-
-BEGIN TRANSACTION tr_tutor
 BEGIN TRY
+BEGIN TRANSACTION tr_tutor
 if not exists (SELECT RFC from Escolar.Tutores where rfc = @rfc)
 begin
-insert into Escolar.Tutores (RFC, nombre, apellidoP, apellidoM, trabajo) values (@rfc, @nombre, @apePaterno, @apeMaterno, @trabajo)
+insert into Escolar.Tutores values 
+(@rfc, @nombre, @apePaterno, @apeMaterno, @trabajo)
 COMMIT TRANSACTION
-end
-else
+END
+
+
+ELSE
 BEGIN
 RAISERROR('RFC REPETIDA',16,1)
-end
+ROLLBACK TRANSACTION tr_tutor
+END
 END TRY
 
-BEGIN catch
+BEGIN CATCH
+RAISERROR('RFC REPETIDA ',16,1)
 ROLLBACK TRANSACTION tr_tutor
-END catch
+END CATCH
 END
+
 select*FROM Escolar.Tutores
+select*FROM Escolar.Alumnos
+ 
