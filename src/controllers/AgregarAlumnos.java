@@ -47,6 +47,9 @@ public class AgregarAlumnos implements ItemListener, PopupMenuListener, KeyListe
 
     private void escuchadores() {
         vista.tf_noControl.addKeyListener(this);
+        vista.tf_nombre.addKeyListener(this);
+        vista.tf_apellidoPat.addKeyListener(this);
+        vista.tf_apellidoMat.addKeyListener(this);
         vista.cb_tutores.addPopupMenuListener(this);
 
         vista.btn_registrar.addActionListener(e -> {
@@ -122,6 +125,7 @@ public class AgregarAlumnos implements ItemListener, PopupMenuListener, KeyListe
     public void keyTyped(KeyEvent e) {
         if (e.getSource() == vista.tf_noControl) {
             Util.onlyNumbers(e, (JTextField) e.getSource());
+            Util.soundAlert(e, (JTextField) e.getSource(), 10);
         }
         if(e.getSource() == vista.tf_nombre || e.getSource() == vista.tf_apellidoPat || e.getSource() == vista.tf_apellidoMat){
             Util.soundAlert(e, (JTextField) e.getSource(), 30);
