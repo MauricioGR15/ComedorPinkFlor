@@ -31,13 +31,7 @@ BEGIN
 PRINT 'no es alergico'
 END
 END
---para probar con una alumno alergico
-/*insert into Servicios.Ordenes VALUES
-(181517,GETDATE(),GETDATE(),0,1)
-go
-DECLARE @ID int = (select top 1 orden_id from Servicios.Ordenes order by orden_id desc)
-INSERT into Servicios.OrdenDesglosada VALUES
-(@ID,1,'Lunes')
+/*
 SELECT*FROM Servicios.Ordenes
 SELECT*FROM Servicios.OrdenDesglosada
 */
